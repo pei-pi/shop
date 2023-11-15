@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preload stylesheet" href="./assets/iconfont.css" as="style" />
+    <title>shop</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      ::placeholder {
+        color: #c3c3c3;
+      }
+
+      .modal {
+        touch-action: none;
+        user-select: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.75);
+      }
+
+      .modal > img {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        transform: translateZ(0);
+      }
+    </style>
+  </head>
+
+  <body>
+    <button
+      style="
+        padding: 0 1rem;
+        font-size: 0.935rem;
+        line-height: 2.625rem;
+        background-color: #ff0000;
+        color: #fff;
+        border: 1px solid #fff;
+      "
+      onclick="openApp(this)"
+    >
+      询价 | 获取报价
+    </button>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=document.querySelector%2Cfetch%2CSymbol.asyncIterator%2CArray.prototype.map%2CArray.prototype.find%2CElement.prototype.classList%2CElement.prototype.append%2CElement.prototype.nextElementSibling%2CElement.prototype.placeholder%2CArray.prototype.forEach%2CDOMTokenList.prototype.forEach%2CNodeList.prototype.forEach%2CObject.assign%2CArray.prototype.%40%40iterator%2CDOMTokenList.prototype.%40%40iterator%2CNodeList.prototype.%40%40iterator%2CString.prototype.endsWith%2CString.prototype.startsWith%2CFunction.prototype.bind
+  "></script>
+    <script src="./shop.js"></script>
+  </body>
+</html>
