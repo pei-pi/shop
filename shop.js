@@ -1,10 +1,10 @@
-const $ = document.querySelector.bind(document);
-const $$ = document.createElement.bind(document);
-// const apiUrl = "http://127.0.0.1:7001/api";
-const apiUrl = "https://you.baige.me/inquiry";
-const products = [];
-const cart = [];
-const bannerUsers = [
+var $ = document.querySelector.bind(document);
+var $$ = document.createElement.bind(document);
+// var apiUrl = "http://127.0.0.1:7001/api";
+var apiUrl = "https://you.baige.me/inquiry";
+var products = [];
+var cart = [];
+var bannerUsers = [
   "13012342321",
   "13012342322",
   "13012342323",
@@ -14,100 +14,103 @@ const bannerUsers = [
   "13012342327",
   "13012342328",
 ];
-let page = 1,
+var page = 1,
   total = 0,
   addId = null;
-async function getProducts() {
-  try {
-    const loadMoreBlock = $("#load-more");
-    const { count, products: productsStr } = await (
-      await fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
-    ).json();
-    total = count;
-    JSON.parse(productsStr).forEach(function (productStr) {
-      const product = JSON.parse(productStr);
-      const { image, title, description, profile, id } = product;
-      const productBlock = $$("li");
-      productBlock.style.cssText =
-        "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
-      productBlock.innerHTML =
-        '<img style="height:5.825rem;" src="' +
-        image +
-        '" /><div style="flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
-        title +
-        "</p><p>" +
-        description +
-        "</p><p>- " +
-        profile +
-        "+</p><p>详情: " +
-        id +
-        '</p></div><button style="min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
-      productBlock
-        .querySelector("button")
-        .addEventListener("click", function () {
-          addId = id;
-          show("add");
-        });
-      loadMoreBlock.parentNode.insertBefore(productBlock, loadMoreBlock);
-      products.push(product);
+function getProducts() {
+  var loadMoreBlock = $("#load-more");
+  fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      var count = res.count;
+      var productsStr = res.products;
+      total = count;
+      JSON.parse(productsStr).forEach(function (productStr) {
+        var product = JSON.parse(productStr);
+        var productBlock = $$("li");
+        productBlock.style.cssText =
+          "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
+        productBlock.innerHTML =
+          '<img style="height:5.825rem;" src="' +
+          product.image +
+          '" /><div style="flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
+          product.title +
+          "</p><p>" +
+          product.description +
+          "</p><p>- " +
+          product.profile +
+          "+</p><p>详情: " +
+          product.id +
+          '</p></div><button style="min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
+        productBlock
+          .querySelector("button")
+          .addEventListener("click", function () {
+            addId = product.id;
+            show("add");
+          });
+        loadMoreBlock.parentNode.insertBefore(productBlock, loadMoreBlock);
+        products.push(product);
+      });
+      loadMoreBlock.style.display = "list-item";
+      var rest = page * 10 > total ? 0 : total - page * 10;
+      loadMoreBlock.querySelector("button").innerText = "还有" + rest + "个";
+      page++;
+      if (rest === 0) loadMoreBlock.style.display = "none";
     });
-    loadMoreBlock.style.display = "list-item";
-    const rest = page * 10 > total ? 0 : total - page * 10;
-    loadMoreBlock.querySelector("button").innerText = "还有" + rest + "个";
-    page++;
-    if (rest === 0) loadMoreBlock.style.display = "none";
-  } catch (e) {
-    console.error(e);
-  }
 }
 
-async function search() {
-  const loadMoreBlock = $("#load-more");
-  let searchValue = $("#searchInput").value;
+function search() {
+  var loadMoreBlock = $("#load-more");
+  var searchValue = $("#searchInput").value;
   console.log(searchValue);
   console.log(page);
   $("#index").innerHTML = " ";
-  try {
-    const { data } = await (
-      await fetch(
-        apiUrl +
-          "/inquiry/queryListProductByUser/?userId=109269&kw=" +
-          searchValue +
-          "&page=" +
-          page
-      )
-    ).json();
-    for (const { image, title, description, profile, id } of data) {
-      const productBlock = $$("li");
-      productBlock.style.cssText =
-        "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
-      productBlock.innerHTML =
-        '<img style="height:5.825rem;" src="' +
-        image +
-        '" /><div style="padding:0 0.35rem;flex-grow:1;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
-        title +
-        "</p><p>" +
-        description +
-        "</p><p>- " +
-        profile +
-        " +</p><p>详情: " +
-        id +
-        '</p></div><button style="width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
-      productBlock
-        .querySelector("button")
-        .addEventListener("click", function () {
-          show("add");
-        });
-      $("#index").appendChild(productBlock);
-    }
-    products.push(...data);
-  } catch {}
+  fetch(
+    apiUrl +
+      "/inquiry/queryListProductByUser/?userId=109269&kw=" +
+      searchValue +
+      "&page=" +
+      page
+  )
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      var data = res.data;
+      for (var i = 0; i < data.length; i++) {
+         var d = data[i];
+        var productBlock = $$("li");
+        productBlock.style.cssText =
+          "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
+        productBlock.innerHTML =
+          '<img style="height:5.825rem;" src="' +
+          d.image +
+          '" /><div style="padding:0 0.35rem;flex-grow:1;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
+          d.title +
+          "</p><p>" +
+          d.description +
+          "</p><p>- " +
+          d.profile +
+          " +</p><p>详情: " +
+          d.id +
+          '</p></div><button style="width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
+        productBlock
+          .querySelector("button")
+          .addEventListener("click", function () {
+            show("add");
+          });
+        $("#index").appendChild(productBlock);
+      }
+      products.push(JSON.parse(JSON.stringify(d)));
+    });
 }
 
-const routes = ["index", "add", "inquiry", "padding", "cartAdd"];
-let state = "index";
-let mounted = false;
-let timer = null;
+var routes = ["index", "add", "inquiry", "padding", "cartAdd"];
+var state = "index";
+var mounted = false;
+var timer = null;
 function show(name) {
   state = name;
   if (timer) {
@@ -115,15 +118,15 @@ function show(name) {
     timer = null;
   }
   routes.forEach(function (route) {
-    const el = $("#" + route);
+    var el = $("#" + route);
     if (route === name) el.style.display = "block";
     else el.style.display = "none";
   });
-  const page = $("#" + name);
-  const title = $("#title");
-  const search = $("#search");
-  const bottom = $("#bottom");
-  const banner = $("#banner");
+  var page = $("#" + name);
+  var title = $("#title");
+  var search = $("#search");
+  var bottom = $("#bottom");
+  var banner = $("#banner");
   switch (name) {
     case "index":
       title.innerText = "询价";
@@ -144,7 +147,7 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "none";
       bottom.style.display = "none";
-      const product = products.find(function (p) {
+      var product = products.find(function (p) {
         return p.id == addId;
       });
       if (product) {
@@ -156,15 +159,15 @@ function show(name) {
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           product.description +
           "</p>";
-        const quantitySettingBlock = $$("div");
+        var quantitySettingBlock = $$("div");
         quantitySettingBlock.style.cssText =
           "width:100%;margin:0.94rem 0;display:flex;";
         quantitySettingBlock.innerHTML =
           '<span style="colro:#909090;font-size:0.95rem;">数量：</span>';
-        const counter = $$("div");
+        var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
         product.quantity = 1;
-        const decreaseButton = $$("button");
+        var decreaseButton = $$("button");
         decreaseButton.style.cssText = "margin:0 0.47rem;";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
@@ -173,9 +176,9 @@ function show(name) {
             quantityBlock.innerText = product.quantity;
           }
         });
-        const quantityBlock = $$("span");
+        var quantityBlock = $$("span");
         quantityBlock.innerText = product.quantity;
-        const increaseButton = $$("button");
+        var increaseButton = $$("button");
         increaseButton.style.cssText = "margin:0 0.47rem";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
@@ -185,7 +188,7 @@ function show(name) {
         counter.append(decreaseButton, quantityBlock, increaseButton);
         quantitySettingBlock.appendChild(counter);
         page.appendChild(quantitySettingBlock);
-        const addButton = $$("button");
+        var addButton = $$("button");
         addButton.style.cssText =
           "width:100%;font-size:1.25rem;line-height:3.5rem;background-color:#ee5353;color:#FFF;border:none;";
         addButton.innerText = "加入";
@@ -197,7 +200,7 @@ function show(name) {
       } else {
         show("index");
       }
-      let list = document.getElementById("list");
+      var list = document.getElementById("list");
       moveImg(list);
 
       turnBack(page);
@@ -212,18 +215,18 @@ function show(name) {
       $("#to-inquiry-button").style.display = "none";
       $("#inquiry-button").style.display = "block";
       page.querySelector("ul").innerHTML = cart
-        .map(function ({ image, title, description, profile, id }) {
+        .map(function (p) {
           return (
             '<li style="padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;"><img style="height:5.825rem;" class="cli" src="' +
-            image +
+            p.image +
             '" /><div style="padding:0 0.35rem;flex-grow:1;font-size:0.7rem;color:#909090;" class="cli"><p style="font-size:0.95rem;color:#000;">' +
-            title +
+            p.title +
             "</p><p>" +
-            description +
+            p.description +
             "</p><p> - " +
-            profile +
+            p.profile +
             "</p><p>详情: " +
-            id +
+            p.id +
             '</p></div><i class="iconfont icon-lajitong"></i></li>'
           );
         })
@@ -235,7 +238,7 @@ function show(name) {
         });
       });
       page.querySelectorAll("li").forEach(function (item, index) {
-        let subitem = item.querySelectorAll(".cli");
+        var subitem = item.querySelectorAll(".cli");
         console.log(subitem);
         subitem.forEach(function (sub) {
           sub.addEventListener("click", function () {
@@ -252,8 +255,8 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "none";
       bottom.style.display = "none";
-      const countdownBlock = page.lastElementChild;
-      let count = 5;
+      var countdownBlock = page.lastElementChild;
+      var count = 5;
       countdownBlock.innerText = "跳转" + count-- + "...";
       timer = setInterval(function () {
         if (count === 0) {
@@ -270,7 +273,7 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "none";
       bottom.style.display = "none";
-      const cartProduct = cart.find(function (p) {
+      var cartProduct = cart.find(function (p) {
         return p.id == addId;
       });
       if (cartProduct) {
@@ -282,14 +285,14 @@ function show(name) {
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           cartProduct.description +
           "</p>";
-        const quantitySettingBlock = $$("div");
+        var quantitySettingBlock = $$("div");
         quantitySettingBlock.style.cssText =
           "width:100%;margin:0.94rem 0;display:flex;";
         quantitySettingBlock.innerHTML =
           '<span style="colro:#909090;font-size:0.95rem;">数量：</span>';
-        const counter = $$("div");
+        var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
-        const decreaseButton = $$("button");
+        var decreaseButton = $$("button");
         decreaseButton.style.cssText = "margin:0 0.47rem;";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
@@ -298,9 +301,9 @@ function show(name) {
             quantityBlock.innerText = cartProduct.quantity;
           }
         });
-        const quantityBlock = $$("span");
+        var quantityBlock = $$("span");
         quantityBlock.innerText = cartProduct.quantity;
-        const increaseButton = $$("button");
+        var increaseButton = $$("button");
         increaseButton.style.cssText = "margin:0 0.47rem";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
@@ -310,7 +313,7 @@ function show(name) {
         counter.append(decreaseButton, quantityBlock, increaseButton);
         quantitySettingBlock.appendChild(counter);
         page.appendChild(quantitySettingBlock);
-        const addButton = $$("button");
+        var addButton = $$("button");
         addButton.style.cssText =
           "width:100%;font-size:1.25rem;line-height:3.5rem;background-color:#ee5353;color:#FFF;border:none;";
         addButton.innerText = "加入";
@@ -343,7 +346,7 @@ function show(name) {
         }
       }
 
-      let cartList = document.getElementById("cartList");
+      var cartList = document.getElementById("cartList");
       moveImg(cartList);
 
       break;
@@ -371,18 +374,18 @@ function back() {
 }
 
 function closeApp() {
-  const app = document.getElementById("app");
+  var app = document.getElementById("app");
   if (app) {
     app.parentNode.removeChild(app);
   }
 }
 
 function openApp(e) {
-  const parentNode = e.parentNode;
+  var parentNode = e.parentNode;
   parentNode.removeChild(e);
-  const app = $$("div");
+  var app = $$("div");
   app.id = "app";
-  app.style =
+  app.style.cssText =
     "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;";
   app.innerHTML =
     '<div style="width:100%;padding:0.475rem 1.17rem 0.95rem;left:0;top:0;font-size:1.175rem;">' +
@@ -408,7 +411,7 @@ function openApp(e) {
       })
       .join("") +
     "</div>" +
-    "<style>@keyframes scrollBanner{from{transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);}}</style>" +
+    "<style>@keyframes scrollBanner{from{transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);-ms-transform:translate3d(-ms-calc(-100% - 0.8rem),0,0);}}</style>" +
     "</div></div>" +
     '<div style="flex-grow:1;padding:0 1.17rem;overflow:auto;">' +
     '<ul id="index" style="list-style-type:none;display:none;">' +
@@ -511,21 +514,21 @@ function openApp(e) {
 }
 
 function moveImg(list, page) {
-  let scale = 1;
-  let offset = { left: 0, top: 0 };
-  let origin = "center";
-  let initialData = { offset: {}, origin: "center", scale: 1 };
-  let startPoint = { x: 0, y: 0 }; // 记录初始触摸点位
-  let isTouching = false; // 标记是否正在移动
-  let isMove = false; // 正在移动中，与点击做区别
-  let touches = new Map(); // 触摸点数组
-  let lastDistance = 0;
-  let lastScale = 1; // 记录下最后的缩放值
-  let scaleOrigin = { x: 0, y: 0 };
+  var scale = 1;
+  var offset = { left: 0, top: 0 };
+  var origin = "center";
+  var initialData = { offset: {}, origin: "center", scale: 1 };
+  var startPoint = { x: 0, y: 0 }; // 记录初始触摸点位
+  var isTouching = false; // 标记是否正在移动
+  var isMove = false; // 正在移动中，与点击做区别
+  var touches = new Map(); // 触摸点数组
+  var lastDistance = 0;
+  var lastScale = 1; // 记录下最后的缩放值
+  var scaleOrigin = { x: 0, y: 0 };
 
-  const { innerWidth: winWidth, innerHeight: winHeight } = window;
-  let cloneEl = null;
-  let originalEl = null;
+  var winWidth = window.innerWidth, winHeight = window.innerHeight;
+  var cloneEl = null;
+  var originalEl = null;
 
   list.addEventListener("click", function (e) {
     if (e.target.classList.contains("item")) {
@@ -538,10 +541,11 @@ function moveImg(list, page) {
 
   function openPreview() {
     scale = 1;
-    const { offsetWidth, offsetHeight } = originalEl;
-    const { top, left } = originalEl.getBoundingClientRect();
+    var offsetWidth = originalEl.offsetWidth, offsetHeight = originalEl.offsetHeight;
+    var rect = originalEl.getBoundingClientRect();
+    var top = rect.top, left = rect.left;
     // 创建蒙层
-    const mask = document.createElement("div");
+    var mask = document.createElement("div");
     mask.classList.add("modal");
     // 添加在body下
     document.body.appendChild(mask);
@@ -573,17 +577,17 @@ function moveImg(list, page) {
     changeStyle(cloneEl, ["left:" + left + "px", "top:" + top + "px"]);
     mask.appendChild(cloneEl);
     // 移动图片到屏幕中心位置
-    const originalCenterPoint = {
+    var originalCenterPoint = {
       x: offsetWidth / 2 + left,
       y: offsetHeight / 2 + top,
     };
-    const winCenterPoint = { x: winWidth / 2, y: winHeight / 2 };
+    var winCenterPoint = { x: winWidth / 2, y: winHeight / 2 };
     console.log(winCenterPoint);
-    const offsetDistance = {
+    var offsetDistance = {
       left: winCenterPoint.x - originalCenterPoint.x + left,
       top: winCenterPoint.y - originalCenterPoint.y + top,
     };
-    const diffs = {
+    var diffs = {
       left: ((adaptScale() - 1) * offsetWidth) / 2,
       top: ((adaptScale() - 1) * offsetHeight) / 2,
     };
@@ -649,18 +653,18 @@ function moveImg(list, page) {
   }
 
   // 获取中心改变的偏差
-  function getOffsetCorrection(x = 0, y = 0) {
-    const touchArr = Array.from(touches);
+  function getOffsetCorrection(x, y) {
+    var touchArr = Array.from(touches);
     if (touchArr.length === 2) {
-      const start = touchArr[0][1];
-      const end = touchArr[1][1];
+      var start = touchArr[0][1];
+      var end = touchArr[1][1];
       x = (start.offsetX + end.offsetX) / 2;
       y = (start.offsetY + end.offsetY) / 2;
     }
     origin = x + "px " + y + "px";
-    const offsetLeft = (scale - 1) * (x - scaleOrigin.x) + offset.left;
-    const offsetTop = (scale - 1) * (y - scaleOrigin.y) + offset.top;
-    scaleOrigin = { x, y };
+    var offsetLeft = (scale - 1) * (x - scaleOrigin.x) + offset.left;
+    var offsetTop = (scale - 1) * (y - scaleOrigin.y) + offset.top;
+    scaleOrigin = { x: x, y: y };
     return { left: offsetLeft, top: offsetTop };
   }
   // 操作事件
@@ -675,11 +679,11 @@ function moveImg(list, page) {
     }
   });
   window.addEventListener("pointerup", function (e) {
-    touches.delete(e.pointerId); // TODO: 抬起移除触摸点
+    touches.devare(e.pointerId); // TODO: 抬起移除触摸点
     if (touches.size <= 0) {
       isTouching = false;
     } else {
-      const touchArr = Array.from(touches);
+      var touchArr = Array.from(touches);
       // 更新点位
       startPoint = { x: touchArr[0][1].clientX, y: touchArr[0][1].clientY };
     }
@@ -715,9 +719,9 @@ function moveImg(list, page) {
       } else {
         // 双指缩放
         touches.set(e.pointerId, e);
-        const ratio = getDistance() / lastDistance;
+        var ratio = getDistance() / lastDistance;
         scale = ratio * lastScale;
-        offset = getOffsetCorrection();
+        offset = getOffsetCorrection(0, 0);
         if (scale < initialData.scale) {
           reduction();
         }
@@ -743,15 +747,15 @@ function moveImg(list, page) {
 
   // 修改样式，减少回流重绘
   function changeStyle(el, arr) {
-    const original = el.style.cssText.split(";");
+    var original = el.style.cssText.split(";");
     original.pop();
     el.style.cssText = original.concat(arr).join(";") + ";";
   }
 
   // 计算自适应屏幕的缩放值
   function adaptScale() {
-    const { offsetWidth: w, offsetHeight: h } = originalEl;
-    let scale = 0;
+    var w = originalEl.offsetWidth, h = originalEl.offsetHeight; 
+    var scale = 0;
     scale = winWidth / w;
     if (h * scale > winHeight - 80) {
       scale = (winHeight - 80) / h;
@@ -761,22 +765,22 @@ function moveImg(list, page) {
 
   // 获取距离
   function getDistance() {
-    const touchArr = Array.from(touches);
+    var touchArr = Array.from(touches);
     if (touchArr.length < 2) {
       return 0;
     }
-    const start = touchArr[0][1];
-    const end = touchArr[1][1];
+    var start = touchArr[0][1];
+    var end = touchArr[1][1];
     return Math.hypot(end.x - start.x, end.y - start.y);
   }
 
   // 记录初始化数据
   function record() {
-    initialData = Object.assign({}, { offset, origin, scale });
+    initialData = Object.assign({}, { offset: offset, origin: origin, scale: scale });
   }
 
   // 还原记录，用于边界处理
-  let timer = null;
+  var timer = null;
   function reduction() {
     timer && clearTimeout(timer);
     timer = setTimeout(function () {
@@ -819,14 +823,15 @@ function turnBack(page) {
   }
 }
 
-let validating = false;
-async function validate(btn) {
+var validating = false;
+function validate(btn) {
   if (!validating) {
     validating = true;
 
-    const form = $("#inquiry form");
-    let validated = true;
-    for (const input of form.elements) {
+    var form = $("#inquiry form");
+    var validated = true;
+    for (var i = 0; i < form.elements.length; i++) {
+      var input = form.elements[i];
       switch (input.name) {
         case "company":
         case "name":
@@ -860,37 +865,35 @@ async function validate(btn) {
     }
 
     if (validated) {
-      try {
-        btn.innerText = "正在发送";
-        const formData = new FormData(form);
-        formData.append("bookId", "148470");
-        formData.append(
-          "products",
-          cart
-            .map(function ({ id, quantity }) {
-              return id + "," + quantity;
-            })
-            .join(";")
-        );
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ": " + pair[1]);
-        }
-        const res = await (
-          await fetch(apiUrl + "/save", {
-            method: "POST",
-            body: formData,
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
+      btn.innerText = "正在发送";
+      var formData = new FormData(form);
+      formData.append("bookId", "148470");
+      formData.append(
+        "products",
+        cart
+          .map(function (p) {
+            return p.id + "," + p.quantity;
           })
-        ).json();
-        console.log(res);
-        // if (...) {
-        //   btn.innerText = "发送询价";
-        //   show("padding");
-        // }
-        validating = false;
-      } catch {}
+          .join(";")
+      );
+      fetch(apiUrl + "/save", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+        .then(function (res) {
+          return res.json();
+        })
+        .then(function (res) {
+          console.log(res);
+          // if (...) {
+          //   btn.innerText = "发送询价";
+          //   show("padding");
+          // }
+        });
+      validating = false;
     } else {
       validating = false;
     }
