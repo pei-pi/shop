@@ -33,6 +33,15 @@
         margin: 0;
         transform: translateZ(0);
       }
+      
+      @keyframes scrollBanner {
+        from {
+          transform: translate3d(0, 0, 0);
+        }
+        to {
+          transform: translate3d(calc(-100% - 0.8rem), 0, 0);
+        }
+      }
     </style>
   </head>
 
@@ -50,8 +59,7 @@
     >
       询价 | 获取报价
     </button>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=document.querySelector%2Cfetch%2CSymbol.asyncIterator%2CArray.prototype.map%2CArray.prototype.find%2CElement.prototype.classList%2CElement.prototype.append%2CElement.prototype.nextElementSibling%2CElement.prototype.placeholder%2CArray.prototype.forEach%2CDOMTokenList.prototype.forEach%2CNodeList.prototype.forEach%2CObject.assign%2CArray.prototype.%40%40iterator%2CDOMTokenList.prototype.%40%40iterator%2CNodeList.prototype.%40%40iterator%2CString.prototype.endsWith%2CString.prototype.startsWith%2CFunction.prototype.bind
-  "></script>
+    <script src="./polyfill.min.js"></script>
     <script src="./shop.js"></script>
   </body>
 </html>
