@@ -411,7 +411,7 @@ function openApp(e) {
       })
       .join("") +
     "</div>" +
-    "<style>@keyframes scrollBanner{from{transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);-ms-transform:translate3d(-ms-calc(-100% - 0.8rem),0,0);}}</style>" +
+    "<style>@-ms-keyframes scrollBanner{from{-ms-transform:translate3d(0,0,0);}to{-ms-transform:translate3d(-ms-calc(-100% - 0.8rem),0,0);}}@keyframes scrollBanner{from{transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);}}</style>" +
     "</div></div>" +
     '<div style="flex-grow:1;padding:0 1.17rem;overflow:auto;">' +
     '<ul id="index" style="list-style-type:none;display:none;">' +
