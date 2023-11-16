@@ -33,23 +33,53 @@ function getProducts() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<img style="height:5.825rem;" src="' +
-          product.image +
-          '" /><div style="flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
-          product.title +
-          "</p><p>" +
-          product.description +
-          "</p><p>- " +
-          product.profile +
-          "+</p><p>详情: " +
-          product.id +
-          '</p></div><button style="min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
-        productBlock
-          .querySelector("button")
-          .addEventListener("click", function () {
-            addId = product.id;
-            show("add");
-          });
+          '<img style="height:5.825rem;" src="' + product.image + '" />';
+        var contentBlock = $$("div");
+        contentBlock.style.cssText =
+          "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;";
+        contentBlock.innerHTML =
+          '<p style="font-size:0.95rem;color:#000;">' + product.title + "</p>";
+        product.quantity = 1;
+        var counter = $$("p");
+        counter.style.cssText = "display:flex;align-items:center;";
+        product.quantity = 1;
+        var decreaseButton = $$("button");
+        decreaseButton.innerText = "-";
+        decreaseButton.addEventListener("click", function () {
+          if (product.quantity > 1) {
+            product.quantity--;
+            quantityBlock.innerText = product.quantity;
+          }
+        });
+        var quantityBlock = $$("span");
+        quantityBlock.style.cssText = "margin:0 0.47rem";
+        quantityBlock.innerText = product.quantity;
+        var increaseButton = $$("button");
+        increaseButton.innerText = "+";
+        increaseButton.addEventListener("click", function () {
+          product.quantity++;
+          quantityBlock.innerText = product.quantity;
+        });
+        counter.append(decreaseButton, quantityBlock, increaseButton);
+        contentBlock.appendChild(counter);
+        var detailBlock = $$("span");
+        detailBlock.innerText = "详情";
+        detailBlock.style.cssText = "font-size:0.8rem;";
+        detailBlock.addEventListener("click", function () {
+          addId = product.id;
+          show("add");
+        });
+        contentBlock.appendChild(detailBlock);
+        productBlock.appendChild(contentBlock);
+        var addButton = $$("button");
+        addButton.style.cssText =
+          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;";
+        addButton.innerText = "加入";
+        addButton.addEventListener("click", function () {
+          cart.push(product);
+          $("#cart").innerText = cart.length + "件产品";
+        });
+        productBlock.appendChild(addButton);
         loadMoreBlock.parentNode.insertBefore(productBlock, loadMoreBlock);
         products.push(product);
       });
@@ -80,7 +110,7 @@ function search() {
     .then(function (res) {
       var data = res.data;
       for (var i = 0; i < data.length; i++) {
-         var d = data[i];
+        var d = data[i];
         var productBlock = $$("li");
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
@@ -374,10 +404,23 @@ function back() {
 }
 
 function closeApp() {
-  var app = document.getElementById("app");
-  if (app) {
-    app.parentNode.removeChild(app);
-  }
+  var app = $("#app");
+  var parentNode = app.parentNode;
+  parentNode.removeChild(app);
+  var button = $$("button");
+  button.style.cssText =
+    "padding:0 1rem;font-size:0.935rem;line-height:2.625rem;background-color:#ff0000;color:#fff;border:1px solid #fff;";
+  button.innerText = "询价 | 获取报价";
+  button.addEventListener("click", function (e) {
+    openApp(e.target);
+  });
+  parentNode.insertBefore(button, parentNode.firstChild);
+  mounted = false;
+  page = 1;
+  total = 0;
+  products.length = 0;
+  cart.length = 0;
+  addId = null;
 }
 
 function openApp(e) {
@@ -526,7 +569,8 @@ function moveImg(list, page) {
   var lastScale = 1; // 记录下最后的缩放值
   var scaleOrigin = { x: 0, y: 0 };
 
-  var winWidth = window.innerWidth, winHeight = window.innerHeight;
+  var winWidth = window.innerWidth,
+    winHeight = window.innerHeight;
   var cloneEl = null;
   var originalEl = null;
 
@@ -541,9 +585,11 @@ function moveImg(list, page) {
 
   function openPreview() {
     scale = 1;
-    var offsetWidth = originalEl.offsetWidth, offsetHeight = originalEl.offsetHeight;
+    var offsetWidth = originalEl.offsetWidth,
+      offsetHeight = originalEl.offsetHeight;
     var rect = originalEl.getBoundingClientRect();
-    var top = rect.top, left = rect.left;
+    var top = rect.top,
+      left = rect.left;
     // 创建蒙层
     var mask = document.createElement("div");
     mask.classList.add("modal");
@@ -754,7 +800,8 @@ function moveImg(list, page) {
 
   // 计算自适应屏幕的缩放值
   function adaptScale() {
-    var w = originalEl.offsetWidth, h = originalEl.offsetHeight; 
+    var w = originalEl.offsetWidth,
+      h = originalEl.offsetHeight;
     var scale = 0;
     scale = winWidth / w;
     if (h * scale > winHeight - 80) {
@@ -776,7 +823,10 @@ function moveImg(list, page) {
 
   // 记录初始化数据
   function record() {
-    initialData = Object.assign({}, { offset: offset, origin: origin, scale: scale });
+    initialData = Object.assign(
+      {},
+      { offset: offset, origin: origin, scale: scale }
+    );
   }
 
   // 还原记录，用于边界处理
