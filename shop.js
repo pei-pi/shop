@@ -77,6 +77,7 @@ function getProducts() {
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           cart.push(product);
+          $("#cart").style.color = "inherit";
           $("#cart").innerText = cart.length + "件产品";
         });
         productBlock.appendChild(addButton);
@@ -164,6 +165,7 @@ function show(name) {
       banner.style.display = "none";
       bottom.style.display = "flex";
       $("#cart").style.display = "block";
+      $("#cart").style.color = "inherit";
       $("#cart").innerText = cart.length + "件产品";
       $("#to-inquiry-button").style.display = "block";
       $("#inquiry-button").style.display = "none";
@@ -522,7 +524,7 @@ function openApp(e) {
     "</div>" +
     '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
     '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
-    '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="show(\'inquiry\')">' +
+    '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
     "询价" +
     "</button>" +
     '<button id="inquiry-button" style="width:100%;height:100%;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
@@ -870,6 +872,17 @@ function turnBack(page) {
     if (touchEndX - touchStartX > swipeThreshold) {
       back();
     }
+  }
+}
+
+function toInquiry() {
+  if (cart.length > 0) {
+    $("#cart").style.color = "inherit";
+    $("#cart").innerText = cart.length + "件产品";
+    show("inquiry");
+  } else {
+    $("#cart").style.color = "#FF0000";
+    $("#cart").innerText = "请选择产品！";
   }
 }
 
