@@ -33,6 +33,7 @@ function getProducts() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
+
           '<img style="height:5.825rem;" src="' +
           product.image +
           '" /><div style="flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
@@ -50,6 +51,7 @@ function getProducts() {
             addId = product.id;
             show("add");
           });
+
         loadMoreBlock.parentNode.insertBefore(productBlock, loadMoreBlock);
         products.push(product);
       });
@@ -80,7 +82,9 @@ function search() {
     .then(function (res) {
       var data = res.data;
       for (var i = 0; i < data.length; i++) {
+
          var d = data[i];
+
         var productBlock = $$("li");
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
@@ -134,6 +138,7 @@ function show(name) {
       banner.style.display = "none";
       bottom.style.display = "flex";
       $("#cart").style.display = "block";
+      $("#cart").style.color = "inherit";
       $("#cart").innerText = cart.length + "件产品";
       $("#to-inquiry-button").style.display = "block";
       $("#inquiry-button").style.display = "none";
@@ -166,7 +171,9 @@ function show(name) {
           '<span style="colro:#909090;font-size:0.95rem;">数量：</span>';
         var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
+
         product.quantity = 1;
+
         var decreaseButton = $$("button");
         decreaseButton.style.cssText = "margin:0 0.47rem;";
         decreaseButton.innerText = "-";
@@ -211,9 +218,10 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "block";
       bottom.style.display = "flex";
-      $("#cart").style.display = "none";
+      $("#cart").style.display = "block";
       $("#to-inquiry-button").style.display = "none";
       $("#inquiry-button").style.display = "block";
+
       page.querySelector("ul").innerHTML = cart
         .map(function (p) {
           return (
@@ -246,6 +254,20 @@ function show(name) {
             show("cartAdd");
           });
         });
+        contentBlock.appendChild(detailBlock);
+        productBlock.appendChild(contentBlock);
+
+        var deleteButton = $$("button");
+        deleteButton.innerHTML = '<i class="iconfont icon-lajitong"></i>';
+        deleteButton.style.cssText =
+          "border:none;background:none;outline:none;";
+        deleteButton.addEventListener("click", function () {
+          cart.splice(index, 1);
+          cartListBlock.removeChild(productBlock);
+          if (cart.length === 0) show("index");
+        });
+        productBlock.appendChild(deleteButton);
+        cartListBlock.appendChild(productBlock);
       });
 
       turnBack(page);
@@ -374,6 +396,7 @@ function back() {
 }
 
 function closeApp() {
+
   var app = document.getElementById("app");
   if (app) {
     app.parentNode.removeChild(app);
@@ -479,7 +502,7 @@ function openApp(e) {
     "</div>" +
     '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
     '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
-    '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="show(\'inquiry\')">' +
+    '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
     "询价" +
     "</button>" +
     '<button id="inquiry-button" style="width:100%;height:100%;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
@@ -526,7 +549,9 @@ function moveImg(list, page) {
   var lastScale = 1; // 记录下最后的缩放值
   var scaleOrigin = { x: 0, y: 0 };
 
+
   var winWidth = window.innerWidth, winHeight = window.innerHeight;
+
   var cloneEl = null;
   var originalEl = null;
 
@@ -541,6 +566,7 @@ function moveImg(list, page) {
 
   function openPreview() {
     scale = 1;
+
     var offsetWidth = originalEl.offsetWidth, offsetHeight = originalEl.offsetHeight;
     var rect = originalEl.getBoundingClientRect();
     var top = rect.top, left = rect.left;
@@ -754,6 +780,7 @@ function moveImg(list, page) {
 
   // 计算自适应屏幕的缩放值
   function adaptScale() {
+
     var w = originalEl.offsetWidth, h = originalEl.offsetHeight; 
     var scale = 0;
     scale = winWidth / w;
@@ -776,7 +803,9 @@ function moveImg(list, page) {
 
   // 记录初始化数据
   function record() {
+
     initialData = Object.assign({}, { offset: offset, origin: origin, scale: scale });
+
   }
 
   // 还原记录，用于边界处理
