@@ -36,13 +36,14 @@ function getProducts() {
           '<img style="height:5.825rem;" src="' + product.image + '" />';
         var contentBlock = $$("div");
         contentBlock.style.cssText =
-          "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;";
+          "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
         contentBlock.innerHTML =
-          '<p style="font-size:0.95rem;color:#000;">' + product.title + "</p>";
+          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          product.title +
+          "</p>";
         product.quantity = 1;
         var counter = $$("p");
         counter.style.cssText = "display:flex;align-items:center;";
-        product.quantity = 1;
         var decreaseButton = $$("button");
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
@@ -198,7 +199,6 @@ function show(name) {
           '<span style="colro:#909090;font-size:0.95rem;">数量：</span>';
         var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
-        product.quantity = 1;
         var decreaseButton = $$("button");
         decreaseButton.style.cssText = "margin:0 0.47rem;";
         decreaseButton.innerText = "-";
@@ -243,41 +243,67 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "block";
       bottom.style.display = "flex";
-      $("#cart").style.display = "none";
+      $("#cart").style.display = "block";
       $("#to-inquiry-button").style.display = "none";
       $("#inquiry-button").style.display = "block";
-      page.querySelector("ul").innerHTML = cart
-        .map(function (p) {
-          return (
-            '<li style="padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;"><img style="height:5.825rem;" class="cli" src="' +
-            p.image +
-            '" /><div style="padding:0 0.35rem;flex-grow:1;font-size:0.7rem;color:#909090;" class="cli"><p style="font-size:0.95rem;color:#000;">' +
-            p.title +
-            "</p><p>" +
-            p.description +
-            "</p><p> - " +
-            p.profile +
-            "</p><p>详情: " +
-            p.id +
-            '</p></div><i class="iconfont icon-lajitong"></i></li>'
-          );
-        })
-        .join("");
-      page.querySelectorAll("i").forEach(function (i, index) {
-        i.addEventListener("click", function () {
+      var cartListBlock = page.querySelector("ul");
+      cartListBlock.innerHTML = "";
+
+      cart.forEach(function (p, index) {
+        var productBlock = $$("li");
+        productBlock.style.cssText =
+          "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
+        productBlock.innerHTML =
+          '<img style="height:5.825rem;" src="' + p.image + '" />';
+        var contentBlock = $$("div");
+        contentBlock.style.cssText =
+          "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
+        contentBlock.innerHTML =
+          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          p.title +
+          "</p>";
+        var counter = $$("p");
+        counter.style.cssText = "display:flex;align-items:center;";
+        var decreaseButton = $$("button");
+        decreaseButton.innerText = "-";
+        decreaseButton.addEventListener("click", function () {
+          if (p.quantity > 1) {
+            p.quantity--;
+            quantityBlock.innerText = p.quantity;
+          }
+        });
+        var quantityBlock = $$("span");
+        quantityBlock.style.cssText = "margin:0 0.47rem";
+        quantityBlock.innerText = p.quantity;
+        var increaseButton = $$("button");
+        increaseButton.innerText = "+";
+        increaseButton.addEventListener("click", function () {
+          p.quantity++;
+          quantityBlock.innerText = p.quantity;
+        });
+        counter.append(decreaseButton, quantityBlock, increaseButton);
+        contentBlock.appendChild(counter);
+        var detailBlock = $$("span");
+        detailBlock.innerText = "详情";
+        detailBlock.style.cssText = "font-size:0.8rem;";
+        detailBlock.addEventListener("click", function () {
+          addId = p.id;
+          show("cartAdd");
+        });
+        contentBlock.appendChild(detailBlock);
+        productBlock.appendChild(contentBlock);
+
+        var deleteButton = $$("button");
+        deleteButton.innerHTML = '<i class="iconfont icon-lajitong"></i>';
+        deleteButton.style.cssText =
+          "border:none;background:none;outline:none;";
+        deleteButton.addEventListener("click", function () {
           cart.splice(index, 1);
-          show("inquiry");
+          cartListBlock.removeChild(productBlock);
+          if (cart.length === 0) show("index");
         });
-      });
-      page.querySelectorAll("li").forEach(function (item, index) {
-        var subitem = item.querySelectorAll(".cli");
-        console.log(subitem);
-        subitem.forEach(function (sub) {
-          sub.addEventListener("click", function () {
-            addId = cart[index].id;
-            show("cartAdd");
-          });
-        });
+        productBlock.appendChild(deleteButton);
+        cartListBlock.appendChild(productBlock);
       });
 
       turnBack(page);
