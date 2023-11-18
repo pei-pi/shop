@@ -17,22 +17,21 @@
       }
 
       .modal {
-        touch-action: none;
-        user-select: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.75);
-      }
+      touch-action: none;
+      user-select: none;
+      position: absolute;
+      top: 3.33rem;
+      left: 0;
+      width: inherit;
+      background-color: rgba(0, 0, 0, 0.75);
+    }
 
-      .modal > img {
-        position: absolute;
-        padding: 0;
-        margin: 0;
-        transform: translateZ(0);
-      }
+    .modal>img {
+      position: absolute;
+      padding: 0;
+      margin: 0;
+      transform: translateZ(0);
+    }
       
       @keyframes scrollBanner {
         from {

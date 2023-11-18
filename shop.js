@@ -15,18 +15,19 @@ var bannerUsers = [
   "13012342328",
 ];
 var page = 1,
+  searchPage = 1,
   total = 0,
   addId = null;
-var flag = true;
+  flag = true;
+  searchFlag = true;
 function getProducts() {
   var loadMoreBlock = $("#load-more");
   window.addEventListener('scroll', function () {
     if (flag && isElementInViewport(loadMoreBlock)) {
       getProducts();
-      console.log("hiuwheuiqhuf");
       flag = false;
     }
-  },true);
+  }, true);
 
   function isElementInViewport(el) {
     var rect = el.getBoundingClientRect();
@@ -64,6 +65,8 @@ function getProducts() {
         var counter = $$("p");
         counter.style.cssText = "display:flex;align-items:center;";
         var decreaseButton = $$("button");
+        decreaseButton.style.width = "1.2rem";
+        decreaseButton.style.height = "1.2rem";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
           if (product.quantity > 1) {
@@ -75,6 +78,8 @@ function getProducts() {
         quantityBlock.style.cssText = "margin:0 0.47rem";
         quantityBlock.innerText = product.quantity;
         var increaseButton = $$("button");
+        increaseButton.style.width = "1.2rem";
+        increaseButton.style.height = "1.2rem";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
           product.quantity++;
@@ -83,8 +88,8 @@ function getProducts() {
         counter.append(decreaseButton, quantityBlock, increaseButton);
         contentBlock.appendChild(counter);
         var detailBlock = $$("span");
-        detailBlock.innerText = "详情";
-        detailBlock.style.cssText = "font-size:0.8rem;";
+        detailBlock.innerText = "了解更多";
+        detailBlock.style.cssText = "font-size:0.8rem;cursor:pointer";
         detailBlock.addEventListener("click", function () {
           addId = product.id;
           show("add");
@@ -93,7 +98,7 @@ function getProducts() {
         productBlock.appendChild(contentBlock);
         var addButton = $$("button");
         addButton.style.cssText =
-          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;";
+          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:4px";
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           cart.push(product);
@@ -120,21 +125,22 @@ function getProducts() {
 
 
 function search() {
+  var loadMoreBlock = $("#load-more");
   var searchValue = $("#searchInput").value;
   console.log(searchValue);
   console.log(page);
   $("#index").innerHTML = " ";
-  fetch(
-    apiUrl +
-    "/inquiry/queryListProductByUser/?userId=109269&kw=" +
-    searchValue +
-    "&page=" +
-    page
-  )
+  // fetch(
+  //   apiUrl +"/queryListProductByUser?userId=109269&kw="+searchValue+"&page="+page)
+  // .then(function (res) {
+  //   return res.json();
+  // })
+  fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
+  .then(function (res) {
+    return res.json();
+  })
     .then(function (res) {
-      return res.json();
-    })
-    .then(function (res) {
+      console.log(res)
       var data = res.data;
       for (var i = 0; i < data.length; i++) {
         var d = data[i];
@@ -150,7 +156,7 @@ function search() {
           d.description +
           "</p><p>- " +
           d.profile +
-          " +</p><p>详情: " +
+          " +</p><p style='cursor:pointer'>了解更多: " +
           d.id +
           '</p></div><button style="width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
         productBlock
@@ -186,6 +192,7 @@ function show(name) {
   var banner = $("#banner");
   switch (name) {
     case "index":
+      document.querySelector("i").style.visibility = "hidden";
       title.innerText = "询价";
       search.style.display = "flex";
       banner.style.display = "none";
@@ -201,6 +208,7 @@ function show(name) {
       }
       break;
     case "add":
+      document.querySelector("i").style.visibility = "visible";
       title.innerText = "详情";
       search.style.display = "none";
       banner.style.display = "none";
@@ -225,7 +233,7 @@ function show(name) {
         var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
         var decreaseButton = $$("button");
-        decreaseButton.style.cssText = "margin:0 0.47rem;";
+        decreaseButton.style.cssText = "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
           if (product.quantity > 1) {
@@ -236,7 +244,7 @@ function show(name) {
         var quantityBlock = $$("span");
         quantityBlock.innerText = product.quantity;
         var increaseButton = $$("button");
-        increaseButton.style.cssText = "margin:0 0.47rem";
+        increaseButton.style.cssText = "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
           product.quantity++;
@@ -264,6 +272,7 @@ function show(name) {
 
       break;
     case "inquiry":
+      document.querySelector("i").style.visibility = "visible";
       title.innerText = "详情";
       search.style.display = "none";
       banner.style.display = "block";
@@ -334,6 +343,7 @@ function show(name) {
       turnBack(page);
       break;
     case "padding":
+      document.querySelector("i").style.visibility = "visible";
       title.innerText = "立即询价";
       search.style.display = "none";
       banner.style.display = "none";
@@ -352,6 +362,7 @@ function show(name) {
       }, 1000);
       break;
     case "cartAdd":
+      document.querySelector("i").style.visibility = "visible";
       title.innerText = "详情";
       search.style.display = "none";
       banner.style.display = "none";
@@ -485,143 +496,154 @@ function openApp(e) {
   parentNode.removeChild(e);
   var app = $$("div");
   app.id = "app";
-  
-  app.innerHTML =
-    '<div style="width:100%;padding:0.475rem 1.17rem 0.95rem;left:0;top:0;font-size:1.175rem;">' +
-    '<div class="topM" style="display:flex;justify-content:space-between;align-items:center;">' +
-    '<i class="iconfont icon-fanhui" onclick="back()"></i>' +
-    '<span id="title"></span>' +
-    '<i class="iconfont icon-guanbi" onclick="closeApp()" style="font-size:1.4rem;"></i>' +
-    "</div>" +
-    '<hr style="margin:0.7rem 0;" />' +
-    '<div id="search" style="padding:1px 0.825rem 1px 1.175rem;border:1px solid #909090;border-radius:2.5rem;outline-style:solid;outline-width:1px;outline-color:#909090;display:none;align-items:center;">' +
-    '<input id="searchInput" style="width:100%;padding-right:4px;font-size:1.2rem;line-height:2.9rem;border:none;outline:none;" placeholder="搜索" type="text" />' +
-    '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick="search()"></i>' +
-    "</div>" +
-    '<div id="banner" style="overflow:hidden;display:none;">' +
-    '<div style="color:#909090;font-size:0.7rem;white-space:nowrap;animation:scrollBanner 10s linear infinite;">' +
-    bannerUsers
-      .map(function (user) {
-        return (
-          '<span style="margin-right:1rem;">' +
-          user.replace(user.substring(3, 7), "****") +
-          " 已发送</span>"
-        );
-      })
-      .join("") +
-    "</div>" +
-    "<style>@-ms-keyframes scrollBanner{from{-ms-transform:translate3d(0,0,0);}to{-ms-transform:translate3d(-ms-calc(-100% - 0.8rem),0,0);}}@keyframes scrollBanner{from{transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);}}</style>" +
-    "</div></div>" +
-    '<div id="content" style="flex-grow:1;padding:0 1.17rem;overflow:auto;">' +
-    '<ul id="index" style="list-style-type:none;display:none;">' +
-    '<li id="load-more" style="padding:2.35rem 0;text-align:center;display:none;">' +
-    '<button style="padding:0 1.27rem;font-size:0.935rem;color:#909090;line-height:2.225rem;background-color:#FFF;border:1px solid #909090;" onclick="getProducts()">' +
-    "</button>" +
-    "</li>" +
-    "</ul>" +
-    '<div id="add"  style="display:none;height:100%"></div>' +
-    '<div id="inquiry" style="display:none;height:100%">' +
-    '<ul style="list-style-type:none;margin:-0.575rem 0 0.575rem;"></ul>' +
-    '<form style="padding:0.47rem;border:1px solid #b1b1b1;border-radius:1rem;font-size:1.175rem;color:#7b7b7b;">' +
-    '<div style="margin-left:0.47rem;line-height:1.875rem;">联系信息</div>' +
-    '<hr style="margin:0 0.47rem" />' +
-    '<div style="padding-left:0.47rem;display:flex;">' +
-    '<span style="width:30%;line-height:1.875rem;">公司</span>' +
-    '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-    '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入公司名" type="text" name="company" />' +
-    '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
-    "</div>" +
-    "</div>" +
-    '<div style="padding-left:0.47rem;display:flex;">' +
-    '<span style="width:30%;line-height:1.875rem;">联系⼈</span>' +
-    '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-    '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入联系人姓名" type="text" name="name" />' +
-    '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
-    "</div>" +
-    "</div>" +
-    '<div style="padding-left:0.47rem;display:flex;">' +
-    '<span style="width:30%;line-height:1.875rem;">电话</span>' +
-    '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-    '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入电话" type="text" name="mobile" />' +
-    '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
-    "</div>" +
-    "</div>" +
-    '<div style="padding-left:0.47rem;display:flex;">' +
-    '<span style="width:30%;line-height:1.875rem;">邮箱</span>' +
-    '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-    '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入邮箱" type="text" name="email" />' +
-    '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
-    "</div>" +
-    "</div>" +
-    '<div style="padding-left:0.47rem;display:flex;">' +
-    '<span style="width:30%;line-height:1.875rem;">留⾔</span>' +
-    '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="我的留言" type="text" name="message" />' +
-    "</div>" +
-    "</form>" +
-    "</div>" +
-    '<div id="padding" style="font-size:0.95rem;color:#a3a3a3;text-align:center;display:none;">' +
-    '<p style="margin-top:1rem;font-size:1.2rem;color:#000;">发送成功</p>' +
-    "<p>询价单已成功发送⾄</p>" +
-    "<p>李永乐 销售经理</p>" +
-    "<p>上海乐图商务有限公司</p>" +
-    '<p style="margin-top:1.875rem;">我们已经收到询价，将在⼀个⼯作⽇与您</p>' +
-    "<p>联系或直接联系400-1800-166</p>" +
-    '<p style="margin-top:1.175rem"></p>' +
-    "</div>" +
-    '<div id="cartAdd" style="display:none;height:100%;"></div>' +
-    "</div>" +
-    '<div id="bottom" style="color:#909090;margin:0.925rem 0;padding:0 1.17rem;display:none;align-items:stretch;">' +
-    '<div style="width:50%;font-size:0.95rem;">' +
-    "<div>已有3⼈询价(⽴即询价)</div>" +
-    "<div>李永乐 销售经理</div>" +
-    "<div>GENELEC有限公司</div>" +
-    "</div>" +
-    '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
-    '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
-    '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
-    "询价" +
-    "</button>" +
-    '<button id="inquiry-button" style="width:100%;height:100%;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
-    "发起询价" +
-    "</button>" +
-    "</div>" +
-    "</div>";
-  parentNode.insertBefore(app, parentNode.firstChild);
-  show("index");
+  fetch(apiUrl + "/getByUser?userId=109269")
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      var post = res.post > 10 ? "已有10+人询价" : "立即询价"
+      var contact = res.contact;
+      var company = res.company;
 
-  // 设置媒体查询
-  var mediaQuery = window.matchMedia("(max-width: 600px)");
-  function handleMediaChange(e) {
-    if (e.matches) {
-      app.style.cssText = "width:100%;height:100vh;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
-    } else {
-      app.style.cssText = "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
-    }
-  }
-  mediaQuery.addListener(handleMediaChange);
-  handleMediaChange(mediaQuery);
+      app.innerHTML =
+        '<div style="width:100%;padding:0.475rem 1.17rem 0.95rem;left:0;top:0;font-size:1.175rem;">' +
+        '<div class="topM" style="display:flex;justify-content:space-between;align-items:center;">' +
+        '<i class="iconfont icon-fanhui" onclick="back()"></i>' +
+        '<span id="title"></span>' +
+        '<i class="iconfont icon-guanbi" onclick="closeApp()" style="font-size:1.4rem;"></i>' +
+        "</div>" +
+        '<hr style="margin:0.7rem 0;" />' +
+        '<div id="search" style="padding:1px 0.825rem 1px 1.175rem;border:1px solid #909090;border-radius:2.5rem;outline-style:solid;outline-width:1px;outline-color:#909090;display:none;align-items:center;">' +
+        '<input id="searchInput" style="width:100%;padding-right:4px;font-size:1.2rem;line-height:2.9rem;border:none;outline:none;" placeholder="搜索" type="text" />' +
+        '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick="search()"></i>' +
+        "</div>" +
+        '<div id="banner" style="overflow:hidden;display:none;">' +
+        '<div style="color:#909090;font-size:0.7rem;white-space:nowrap;animation:scrollBanner 10s linear infinite;">' +
+        bannerUsers
+          .map(function (user) {
+            return (
+              '<span style="margin-right:1rem;">' +
+              user.replace(user.substring(3, 7), "****") +
+              " 已发送</span>"
+            );
+          })
+          .join("") +
+        "</div>" +
+        "<style>@-ms-keyframes scrollBanner{from{-ms-transform:translate3d(0,0,0);}to{-ms-transform:translate3d(-ms-calc(-100% - 0.8rem),0,0);}}@keyframes scrollBanner{from{transform:translate3d(0,0,0);}to{transform:translate3d(calc(-100% - 0.8rem),0,0);}}</style>" +
+        "</div></div>" +
+        '<div id="content" style="flex-grow:1;padding:0 1.17rem;overflow:auto;">' +
+        '<ul id="index" style="list-style-type:none;display:none;">' +
+        '<li id="load-more" style="padding:2.35rem 0;text-align:center;display:none;">' +
+        '<button style="padding:0 1.27rem;font-size:0.935rem;color:#909090;line-height:2.225rem;background-color:#FFF;border:1px solid #909090;" onclick="getProducts()">' +
+        "</button>" +
+        "</li>" +
+        "</ul>" +
+        '<div id="add"  style="display:none;height:100%"></div>' +
+        '<div id="inquiry" style="display:none;height:100%">' +
+        '<ul style="list-style-type:none;margin:-0.575rem 0 0.575rem;"></ul>' +
+        '<form style="padding:0.47rem;border:1px solid #b1b1b1;border-radius:1rem;font-size:1.175rem;color:#7b7b7b;">' +
+        '<div style="margin-left:0.47rem;line-height:1.875rem;">联系信息</div>' +
+        '<hr style="margin:0 0.47rem" />' +
+        '<div style="padding-left:0.47rem;display:flex;">' +
+        '<span style="width:30%;line-height:1.875rem;">公司</span>' +
+        '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入公司名" type="text" name="company" />' +
+        '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
+        "</div>" +
+        "</div>" +
+        '<div style="padding-left:0.47rem;display:flex;">' +
+        '<span style="width:30%;line-height:1.875rem;">联系⼈</span>' +
+        '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入联系人姓名" type="text" name="name" />' +
+        '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
+        "</div>" +
+        "</div>" +
+        '<div style="padding-left:0.47rem;display:flex;">' +
+        '<span style="width:30%;line-height:1.875rem;">电话</span>' +
+        '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入电话" type="text" name="mobile" />' +
+        '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
+        "</div>" +
+        "</div>" +
+        '<div style="padding-left:0.47rem;display:flex;">' +
+        '<span style="width:30%;line-height:1.875rem;">邮箱</span>' +
+        '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入邮箱" type="text" name="email" />' +
+        '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
+        "</div>" +
+        "</div>" +
+        '<div style="padding-left:0.47rem;display:flex;">' +
+        '<span style="width:30%;line-height:1.875rem;">留⾔</span>' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="我的留言" type="text" name="message" />' +
+        "</div>" +
+        "</form>" +
+        "</div>" +
+        '<div id="padding" style="font-size:0.95rem;color:#a3a3a3;text-align:center;display:none;">' +
+        '<p style="margin-top:1rem;font-size:1.2rem;color:#000;">发送成功</p>' +
+        "<p>询价单已成功发送⾄</p>" +
+        "<p>李永乐 销售经理</p>" +
+        "<p>上海乐图商务有限公司</p>" +
+        '<p style="margin-top:1.875rem;">我们已经收到询价，将在⼀个⼯作⽇与您</p>' +
+        "<p>联系或直接联系400-1800-166</p>" +
+        '<p style="margin-top:1.175rem"></p>' +
+        "</div>" +
+        '<div id="cartAdd" style="display:none;height:100%;"></div>' +
+        "</div>" +
+        '<div id="bottom" style="color:#909090;margin:0.925rem 0;padding:0 1.17rem;display:none;align-items:stretch;">' +
+        '<div style="width:50%;font-size:0.95rem;">' +
+        "<div>" + post + "</div>" +
+        "<div>" + contact + "</div>" +
+        "<div>" + company + "</div>" +
+        "</div>" +
+        '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
+        '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
+        '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
+        "询价" +
+        "</button>" +
+        '<button id="inquiry-button" style="width:100%;height:100%;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
+        "发起询价" +
+        "</button>" +
+        "</div>" +
+        "</div>";
+      parentNode.insertBefore(app, parentNode.firstChild);
+      show("index");
 
-  // 下滑关闭
-  var touchStartY = 0;
-  var touchEndY = 0;
 
-  document
-    .querySelector("div.topM")
-    .addEventListener("touchstart", function (e) {
-      touchStartY = e.touches[0].pageY;
-    });
 
-  document.querySelector("div.topM").addEventListener("touchend", function (e) {
-    touchEndY = e.changedTouches[0].pageY;
-    handleSwipe(e);
-  });
+      // 设置媒体查询
+      var mediaQuery = window.matchMedia("(max-width: 600px)");
+      function handleMediaChange(e) {
+        if (e.matches) {
+          app.style.cssText = "width:100%;height:100vh;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
+        } else {
+          app.style.cssText = "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
+        }
+      }
+      mediaQuery.addListener(handleMediaChange);
+      handleMediaChange(mediaQuery);
 
-  function handleSwipe(e) {
-    var swipeThreshold = 290; // 设置滑动阈值
-    if (touchEndY - touchStartY > swipeThreshold) {
-      closeApp();
-    }
-  }
+      // 下滑关闭
+      var touchStartY = 0;
+      var touchEndY = 0;
+
+      document
+        .querySelector("div.topM")
+        .addEventListener("touchstart", function (e) {
+          touchStartY = e.touches[0].pageY;
+        });
+
+      document.querySelector("div.topM").addEventListener("touchend", function (e) {
+        touchEndY = e.changedTouches[0].pageY;
+        handleSwipe(e);
+      });
+
+      function handleSwipe(e) {
+        var swipeThreshold = 290; // 设置滑动阈值
+        if (touchEndY - touchStartY > swipeThreshold) {
+          closeApp();
+        }
+      }
+    })
 }
 
 function moveImg(list, page) {
