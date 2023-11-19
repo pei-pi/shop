@@ -1233,8 +1233,11 @@ function validate(btn) {
         .then(function (res) {
           btn.innerText = "发送询价";
           show("padding", res);
+          validating = false;
+        })
+        .catch(function () {
+          validating = false;
         });
-      validating = false;
     } else {
       validating = false;
     }
