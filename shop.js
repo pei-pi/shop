@@ -258,8 +258,8 @@ var state = "index";
 var oldSearchValue = "";
 var mounted = false;
 var timer = null;
-function show(name) {
-  console.log(name);
+function show(name, obj) {
+  if (!obj) obj = {};
   state = name;
   if (timer) {
     clearInterval(timer);
@@ -489,6 +489,20 @@ function show(name) {
       search.style.display = "none";
       banner.style.display = "none";
       bottom.style.display = "none";
+      page.innerHTML =
+        '<p style="margin-top:1rem;font-size:1.2rem;color:#000;">发送成功</p>' +
+        "<p>询价单已成功发送⾄</p>" +
+        "<p>" +
+        (obj.contact || "contact") +
+        "</p>" +
+        "<p>" +
+        (obj.company || "company") +
+        "</p>" +
+        '<p style="margin-top:1.875rem;">我们已经收到询价，将在⼀个⼯作⽇与您</p>' +
+        "<p>联系或直接联系" +
+        (obj.feedback || "feedback") +
+        "</p>" +
+        '<p style="margin-top:1.175rem"></p>';
       var countdownBlock = page.lastElementChild;
       var count = 5;
       countdownBlock.innerText = "跳转" + count-- + "...";
@@ -739,15 +753,7 @@ function openApp(e) {
         "</div>" +
         "</form>" +
         "</div>" +
-        '<div id="padding" style="font-size:0.95rem;color:#a3a3a3;text-align:center;display:none;">' +
-        '<p style="margin-top:1rem;font-size:1.2rem;color:#000;">发送成功</p>' +
-        "<p>询价单已成功发送⾄</p>" +
-        "<p>李永乐 销售经理</p>" +
-        "<p>上海乐图商务有限公司</p>" +
-        '<p style="margin-top:1.875rem;">我们已经收到询价，将在⼀个⼯作⽇与您</p>' +
-        "<p>联系或直接联系400-1800-166</p>" +
-        '<p style="margin-top:1.175rem"></p>' +
-        "</div>" +
+        '<div id="padding" style="font-size:0.95rem;color:#a3a3a3;text-align:center;display:none;"></div>' +
         '<div id="cartAdd" style="display:none;height:100%;"></div>' +
         "</div>" +
         '<div id="bottom" style="color:#909090;margin:0.925rem 0;padding:0 1.17rem;display:none;align-items:stretch;">' +
@@ -1203,31 +1209,30 @@ function validate(btn) {
     if (validated) {
       btn.innerText = "正在发送";
       var formData = new FormData(form);
-      formData.append("bookId", "148470");
-      formData.append(
-        "products",
-        cart
+      var data = {
+        bookId: "148470",
+        products: cart
           .map(function (p) {
             return p.id + "," + p.quantity;
           })
-          .join(";")
-      );
-      fetch(apiUrl + "/save", {
+          .join(";"),
+      };
+      formData.forEach(function (value, key) {
+        data[key] = value;
+      });
+      fetch(apiUrl + "/saveProduct", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
       })
         .then(function (res) {
           return res.json();
         })
         .then(function (res) {
-          console.log(res);
-          // if (...) {
-          //   btn.innerText = "发送询价";
-          //   show("padding");
-          // }
+          btn.innerText = "发送询价";
+          show("padding", res);
         });
       validating = false;
     } else {
