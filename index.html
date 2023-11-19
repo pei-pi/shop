@@ -11,7 +11,9 @@
         margin: 0;
         padding: 0;
       }
-
+      body{
+        touch-action: manipulation;
+      }
       ::placeholder {
         color: #c3c3c3;
       }
@@ -22,14 +24,12 @@
       position: absolute;
       top: 3.33rem;
       left: 0;
-      width: inherit;
+      display: flex;
+      justify-content: center;
       background-color: rgba(0, 0, 0, 0.75);
     }
 
     .modal>img {
-      position: absolute;
-      padding: 0;
-      margin: 0;
       transform: translateZ(0);
     }
       
