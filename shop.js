@@ -20,7 +20,7 @@ var page = 1,
   addId = null,
   flag = true;
 function getProducts() {
-  console.log("-------------product")
+  console.log("-------------product");
   var loadMoreBlock = $("#load-more");
   window.addEventListener(
     "scroll",
@@ -131,38 +131,54 @@ function getProducts() {
     });
 }
 
-
 var searchTotal = 0,
   searchFlag = true,
   searchPage = 1;
 function querySearch() {
   console.log("----------------search" + searchPage);
   var searchLoadMoreBlock = $("#search-load-more");
-  window.addEventListener('scroll', function () {
-    if (searchFlag && isElementInViewport(searchLoadMoreBlock)) {
-      querySearch();
-      searchFlag = false;
-    }
-  }, true);
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (searchFlag && isElementInViewport(searchLoadMoreBlock)) {
+        querySearch();
+        searchFlag = false;
+      }
+    },
+    true
+  );
 
   function isElementInViewport(el) {
     var rect = el.getBoundingClientRect();
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
   }
   var searchValue = $("#searchInput").value;
   console.log(searchValue);
-  console.log(apiUrl + "/queryListProductByUser?userId=109269&kw=" + searchValue + "&page=" + searchPage);
+  console.log(
+    apiUrl +
+      "/queryListProductByUser?userId=109269&kw=" +
+      searchValue +
+      "&page=" +
+      searchPage
+  );
   fetch(
-    apiUrl + "/queryListProductByUser?userId=109269&kw=" + searchValue + "&page=" + searchPage)
+    apiUrl +
+      "/queryListProductByUser?userId=109269&kw=" +
+      searchValue +
+      "&page=" +
+      searchPage
+  )
     .then(function (res) {
       console.log(res);
       return res.json();
-    }).then(function (res) {
+    })
+    .then(function (res) {
       console.log(res);
       var count = res.count;
       var productsStr = res.products;
@@ -227,19 +243,23 @@ function querySearch() {
           $("#cart").innerText = cart.length + "件产品";
         });
         productBlock.appendChild(addButton);
-        searchLoadMoreBlock.parentNode.insertBefore(productBlock, searchLoadMoreBlock);
+        searchLoadMoreBlock.parentNode.insertBefore(
+          productBlock,
+          searchLoadMoreBlock
+        );
         products.push(product);
       });
       searchLoadMoreBlock.style.display = "list-item";
-      var rest = searchPage * 10 > searchTotal ? 0 : searchTotal - searchPage * 10;
-      searchLoadMoreBlock.querySelector("button").innerText = "还有" + rest + "个";
+      var rest =
+        searchPage * 10 > searchTotal ? 0 : searchTotal - searchPage * 10;
+      searchLoadMoreBlock.querySelector("button").innerText =
+        "还有" + rest + "个";
       searchPage++;
       if (rest === 0) {
         searchLoadMoreBlock.style.display = "none";
       } else {
         flag = true;
       }
-
     });
 }
 
@@ -249,7 +269,7 @@ var oldSearchValue = "";
 var mounted = false;
 var timer = null;
 function show(name) {
-  console.log(name)
+  console.log(name);
   state = name;
   if (timer) {
     clearInterval(timer);
@@ -259,8 +279,7 @@ function show(name) {
     var el = $("#" + route);
     if (route === name) {
       el.style.display = "block";
-    }
-    else {
+    } else {
       el.style.display = "none";
     }
   });
@@ -299,10 +318,10 @@ function show(name) {
       $("#to-inquiry-button").style.display = "block";
       $("#inquiry-button").style.display = "none";
       console.log(oldSearchValue);
-      console.log($("#searchInput").value)
+      console.log($("#searchInput").value);
       if ($("#searchInput").value !== oldSearchValue) {
         var liNum = $("#searchPage").querySelectorAll("li").length;
-        console.log($("#searchPage"))
+        console.log($("#searchPage"));
         for (var i = 0; i < liNum - 1; i++) {
           $("#searchPage li:first-child").remove();
         }
@@ -324,10 +343,10 @@ function show(name) {
         page.innerHTML =
           '<div id="list" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           product.image +
-          '" /></div><p style="font-size:1.875rem;">' +
+          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;">' +
           product.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
-          product.description +
+          product.description.replace(/\n/g, "<br />") +
           "</p>";
         var quantitySettingBlock = $$("div");
         quantitySettingBlock.style.cssText =
@@ -486,10 +505,10 @@ function show(name) {
         page.innerHTML =
           '<div id="cartList" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           cartProduct.image +
-          '" /></div><p style="font-size:1.875rem;">' +
+          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;">' +
           cartProduct.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
-          cartProduct.description +
+          cartProduct.description.replace(/\n/g, "<br />") +
           "</p>";
         var quantitySettingBlock = $$("div");
         quantitySettingBlock.style.cssText =
@@ -632,7 +651,9 @@ function openApp(e) {
         '<hr style="margin:0.7rem 0;" />' +
         '<div id="search" style="padding:1px 0.825rem 1px 1.175rem;border:1px solid #909090;border-radius:2.5rem;outline-style:solid;outline-width:1px;outline-color:#909090;display:none;align-items:center;">' +
         '<input id="searchInput" style="width:100%;padding-right:4px;font-size:1.2rem;line-height:2.9rem;border:none;outline:none;" placeholder="搜索" type="text" />' +
-        '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick=' + "show('searchPage')" + '></i>' +
+        '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick=' +
+        "show('searchPage')" +
+        "></i>" +
         "</div>" +
         '<div id="banner" style="overflow:hidden;display:none;">' +
         '<div style="color:#909090;font-size:0.7rem;white-space:nowrap;animation:scrollBanner 10s linear infinite;">' +
