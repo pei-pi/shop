@@ -343,7 +343,7 @@ function show(name) {
         page.innerHTML =
           '<div id="list" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           product.image +
-          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;">' +
+          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
           product.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           product.description.replace(/\n/g, "<br />") +
@@ -505,7 +505,7 @@ function show(name) {
         page.innerHTML =
           '<div id="cartList" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           cartProduct.image +
-          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;">' +
+          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
           cartProduct.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           cartProduct.description.replace(/\n/g, "<br />") +
