@@ -1157,6 +1157,15 @@ function validate(btn) {
 
     var form = $("#inquiry form");
     var validated = true;
+    setTimeout(function () {
+      if (form.scrollIntoView) {
+        if ("scrollBehavior" in document.documentElement.style) {
+          form.scrollIntoView({ block: "end", inline: "nearest" });
+        } else {
+          form.scrollIntoView(false);
+        }
+      }
+    }, 0);
     for (var i = 0; i < form.elements.length; i++) {
       var input = form.elements[i];
       switch (input.name) {
