@@ -622,16 +622,12 @@ function back() {
       break;
   }
 }
-
+var openBtn;
 function closeApp() {
   var app = $("#app");
-  // app.style.cssText = "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
   var parentNode = app.parentNode;
   parentNode.removeChild(app);
-  var button = $$("button");
-  button.style.cssText =
-    "padding:0 1rem;font-size:0.935rem;line-height:2.625rem;background-color:#ff0000;color:#fff;border:1px solid #fff;";
-  button.innerText = "询价 | 获取报价";
+  var button = openBtn;
   button.addEventListener("click", function (e) {
     openApp(e.target);
   });
@@ -645,6 +641,7 @@ function closeApp() {
 }
 
 function openApp(e) {
+  openBtn = e;
   var parentNode = e.parentNode;
   parentNode.removeChild(e);
   var app = $$("div");

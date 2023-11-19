@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preload stylesheet" href="./assets/iconfont.css" as="style" />
     <title>shop</title>
+    <script>
+        fetch("https://you.baige.me/inquiry/getByUser?userId=109269")
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (res) {
+        $("#visit").innerText = res.visits+"人浏览";
+      })
+    </script>
     <style>
       * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-      body{
+      body {
         touch-action: manipulation;
       }
       ::placeholder {
@@ -19,20 +28,20 @@
       }
 
       .modal {
-      touch-action: none;
-      user-select: none;
-      position: absolute;
-      top: 3.33rem;
-      left: 0;
-      display: flex;
-      justify-content: center;
-      background-color: rgba(0, 0, 0, 0.75);
-    }
+        touch-action: none;
+        user-select: none;
+        position: absolute;
+        top: 3.33rem;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.75);
+      }
 
-    .modal>img {
-      transform: translateZ(0);
-    }
-      
+      .modal > img {
+        transform: translateZ(0);
+      }
+
       @keyframes scrollBanner {
         from {
           transform: translate3d(0, 0, 0);
@@ -41,23 +50,52 @@
           transform: translate3d(calc(-100% - 0.8rem), 0, 0);
         }
       }
+      .openBlock {
+        opacity: 0.3;
+        transition: opacity 4s;
+      }
+      .openBlock:hover {
+        cursor: pointer;
+        opacity: 1;
+        transition: opacity 0.5s;
+      }
     </style>
   </head>
 
   <body>
-    <button
+    <div
+      class="openBlock"
       style="
-        padding: 0 1rem;
-        font-size: 0.935rem;
-        line-height: 2.625rem;
-        background-color: #ff0000;
-        color: #fff;
-        border: 1px solid #fff;
+        width: 200px;
+        position: absolute;
+        left: 4px;
+        bottom: 20px;
+        background-color: #f0f0f0;
+        height: 80px;
+        border-radius: 8px;
+        box-shadow: 0px -2px 5px 0px #b3b3b3, -2px 0px 5px 0px #b3b3b3,
+          2px 0px 5px 0px #b3b3b3, 0px 2px 5px 0px #b3b3b3;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
       "
       onclick="openApp(this)"
     >
-      询价 | 获取报价
-    </button>
+      <div
+        style="
+          width: 30px;
+          height: 30px;
+          background-color: orange;
+          border-radius: 12px;
+          position: relative;
+          top: -10px;
+        "
+      ></div>
+      <div style="color: gray">
+        <p style="line-height: 25px">询价 | 获取报价</p>
+        <p id="visit" style="line-height: 25px"></p>
+      </div>
+    </div>
     <script src="./polyfill.min.js"></script>
     <script src="./shop.js"></script>
   </body>
