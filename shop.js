@@ -471,7 +471,7 @@ function show(name) {
         var deleteButton = $$("button");
         deleteButton.innerHTML = '<i class="iconfont icon-lajitong"></i>';
         deleteButton.style.cssText =
-          "border:none;background:none;outline:none;";
+          "border:none;background:none;outline:none;color:#767676;";
         deleteButton.addEventListener("click", function () {
           cart.splice(index, 1);
           cartListBlock.removeChild(productBlock);
