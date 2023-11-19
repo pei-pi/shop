@@ -14,13 +14,13 @@ var bannerUsers = [
   "13012342327",
   "13012342328",
 ];
+var addBefore = "index";
 var page = 1,
-  searchPage = 1,
   total = 0,
-  addId = null;
+  addId = null,
   flag = true;
-  searchFlag = true;
 function getProducts() {
+  console.log("-------------product")
   var loadMoreBlock = $("#load-more");
   window.addEventListener('scroll', function () {
     if (flag && isElementInViewport(loadMoreBlock)) {
@@ -91,6 +91,7 @@ function getProducts() {
         detailBlock.innerText = "了解更多";
         detailBlock.style.cssText = "font-size:0.8rem;cursor:pointer";
         detailBlock.addEventListener("click", function () {
+          addBefore = "index";
           addId = product.id;
           show("add");
         });
@@ -123,58 +124,124 @@ function getProducts() {
 }
 
 
+var searchTotal = 0,
+  searchFlag = true,
+  searchPage = 1;
+function querySearch() {
+  console.log("----------------search" + searchPage);
+  var searchLoadMoreBlock = $("#search-load-more");
+  window.addEventListener('scroll', function () {
+    if (searchFlag && isElementInViewport(searchLoadMoreBlock)) {
+      querySearch();
+      searchFlag = false;
+    }
+  }, true);
 
-function search() {
-  var loadMoreBlock = $("#load-more");
+  function isElementInViewport(el) {
+    var rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
   var searchValue = $("#searchInput").value;
   console.log(searchValue);
-  console.log(page);
-  $("#index").innerHTML = " ";
-  // fetch(
-  //   apiUrl +"/queryListProductByUser?userId=109269&kw="+searchValue+"&page="+page)
-  // .then(function (res) {
-  //   return res.json();
-  // })
-  fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
-  .then(function (res) {
-    return res.json();
-  })
+  console.log(apiUrl + "/queryListProductByUser?userId=109269&kw=" + searchValue + "&page=" + searchPage);
+  fetch(
+    apiUrl + "/queryListProductByUser?userId=109269&kw=" + searchValue + "&page=" + searchPage)
     .then(function (res) {
-      console.log(res)
-      var data = res.data;
-      for (var i = 0; i < data.length; i++) {
-        var d = data[i];
+      console.log(res);
+      return res.json();
+    }).then(function (res) {
+      console.log(res);
+      var count = res.count;
+      var productsStr = res.products;
+      searchTotal = count;
+      JSON.parse(productsStr).forEach(function (productStr) {
+        var product = JSON.parse(productStr);
         var productBlock = $$("li");
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<img style="height:5.825rem;" src="' +
-          d.image +
-          '" /><div style="padding:0 0.35rem;flex-grow:1;font-size:0.7rem;color:#909090;"><p style="font-size:0.95rem;color:#000;">' +
-          d.title +
-          "</p><p>" +
-          d.description +
-          "</p><p>- " +
-          d.profile +
-          " +</p><p style='cursor:pointer'>了解更多: " +
-          d.id +
-          '</p></div><button style="width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;">加入</button>';
-        productBlock
-          .querySelector("button")
-          .addEventListener("click", function () {
-            show("add");
-          });
-        $("#index").appendChild(productBlock);
+          '<img style="height:5.825rem;" src="' + product.image + '" />';
+        var contentBlock = $$("div");
+        contentBlock.style.cssText =
+          "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
+        contentBlock.innerHTML =
+          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          product.title +
+          "</p>";
+        product.quantity = 1;
+        var counter = $$("p");
+        counter.style.cssText = "display:flex;align-items:center;";
+        var decreaseButton = $$("button");
+        decreaseButton.style.width = "1.2rem";
+        decreaseButton.style.height = "1.2rem";
+        decreaseButton.innerText = "-";
+        decreaseButton.addEventListener("click", function () {
+          if (product.quantity > 1) {
+            product.quantity--;
+            quantityBlock.innerText = product.quantity;
+          }
+        });
+        var quantityBlock = $$("span");
+        quantityBlock.style.cssText = "margin:0 0.47rem";
+        quantityBlock.innerText = product.quantity;
+        var increaseButton = $$("button");
+        increaseButton.style.width = "1.2rem";
+        increaseButton.style.height = "1.2rem";
+        increaseButton.innerText = "+";
+        increaseButton.addEventListener("click", function () {
+          product.quantity++;
+          quantityBlock.innerText = product.quantity;
+        });
+        counter.append(decreaseButton, quantityBlock, increaseButton);
+        contentBlock.appendChild(counter);
+        var detailBlock = $$("span");
+        detailBlock.innerText = "了解更多";
+        detailBlock.style.cssText = "font-size:0.8rem;cursor:pointer";
+        detailBlock.addEventListener("click", function () {
+          addBefore = "search";
+          addId = product.id;
+          show("add");
+        });
+        contentBlock.appendChild(detailBlock);
+        productBlock.appendChild(contentBlock);
+        var addButton = $$("button");
+        addButton.style.cssText =
+          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:4px";
+        addButton.innerText = "加入";
+        addButton.addEventListener("click", function () {
+          cart.push(product);
+          $("#cart").style.color = "inherit";
+          $("#cart").innerText = cart.length + "件产品";
+        });
+        productBlock.appendChild(addButton);
+        searchLoadMoreBlock.parentNode.insertBefore(productBlock, searchLoadMoreBlock);
+        products.push(product);
+      });
+      searchLoadMoreBlock.style.display = "list-item";
+      var rest = searchPage * 10 > searchTotal ? 0 : searchTotal - searchPage * 10;
+      searchLoadMoreBlock.querySelector("button").innerText = "还有" + rest + "个";
+      searchPage++;
+      if (rest === 0) {
+        searchLoadMoreBlock.style.display = "none";
+      } else {
+        flag = true;
       }
-      products.push(JSON.parse(JSON.stringify(d)));
+
     });
 }
 
-var routes = ["index", "add", "inquiry", "padding", "cartAdd"];
+var routes = ["index", "searchPage", "add", "inquiry", "padding", "cartAdd"];
 var state = "index";
+var oldSearchValue = "";
 var mounted = false;
 var timer = null;
 function show(name) {
+  console.log(name)
   state = name;
   if (timer) {
     clearInterval(timer);
@@ -182,9 +249,14 @@ function show(name) {
   }
   routes.forEach(function (route) {
     var el = $("#" + route);
-    if (route === name) el.style.display = "block";
-    else el.style.display = "none";
+    if (route === name) {
+      el.style.display = "block";
+    }
+    else {
+      el.style.display = "none";
+    }
   });
+
   var page = $("#" + name);
   var title = $("#title");
   var search = $("#search");
@@ -205,6 +277,30 @@ function show(name) {
       if (!mounted) {
         mounted = true;
         getProducts();
+      }
+      break;
+    case "searchPage":
+      document.querySelector("i").style.visibility = "visible";
+      title.innerText = "询价";
+      search.style.display = "flex";
+      banner.style.display = "none";
+      bottom.style.display = "flex";
+      $("#cart").style.display = "block";
+      $("#cart").style.color = "inherit";
+      $("#cart").innerText = cart.length + "件产品";
+      $("#to-inquiry-button").style.display = "block";
+      $("#inquiry-button").style.display = "none";
+      console.log(oldSearchValue);
+      console.log($("#searchInput").value)
+      if ($("#searchInput").value !== oldSearchValue) {
+        var liNum = $("#searchPage").querySelectorAll("li").length;
+        console.log($("#searchPage"))
+        for (var i = 0; i < liNum - 1; i++) {
+          $("#searchPage li:first-child").remove();
+        }
+        searchPage = 1;
+        oldSearchValue = $("#searchInput").value;
+        querySearch();
       }
       break;
     case "add":
@@ -454,8 +550,16 @@ function back() {
     case "inquiry":
       show("index");
       break;
-    case "add":
+    case "searchPage":
+      searchPage = 1;
       show("index");
+      break;
+    case "add":
+      if (addBefore === "index") {
+        show("index");
+      } else {
+        show("searchPage");
+      }
       break;
     case "padding":
       show("index");
@@ -515,7 +619,7 @@ function openApp(e) {
         '<hr style="margin:0.7rem 0;" />' +
         '<div id="search" style="padding:1px 0.825rem 1px 1.175rem;border:1px solid #909090;border-radius:2.5rem;outline-style:solid;outline-width:1px;outline-color:#909090;display:none;align-items:center;">' +
         '<input id="searchInput" style="width:100%;padding-right:4px;font-size:1.2rem;line-height:2.9rem;border:none;outline:none;" placeholder="搜索" type="text" />' +
-        '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick="search()"></i>' +
+        '<i class="iconfont icon-sousuoxiao" style="color:#909090;font-size:1.75rem;" onclick=' + "show('searchPage')" + '></i>' +
         "</div>" +
         '<div id="banner" style="overflow:hidden;display:none;">' +
         '<div style="color:#909090;font-size:0.7rem;white-space:nowrap;animation:scrollBanner 10s linear infinite;">' +
@@ -535,6 +639,12 @@ function openApp(e) {
         '<ul id="index" style="list-style-type:none;display:none;">' +
         '<li id="load-more" style="padding:2.35rem 0;text-align:center;display:none;">' +
         '<button style="padding:0 1.27rem;font-size:0.935rem;color:#909090;line-height:2.225rem;background-color:#FFF;border:1px solid #909090;" onclick="getProducts()">' +
+        "</button>" +
+        "</li>" +
+        "</ul>" +
+        '<ul id="searchPage" style="list-style-type:none;display:none;">' +
+        '<li id="search-load-more" style="padding:2.35rem 0;text-align:center;display:none;">' +
+        '<button style="padding:0 1.27rem;font-size:0.935rem;color:#909090;line-height:2.225rem;background-color:#FFF;border:1px solid #909090;" onclick="querySearch()">' +
         "</button>" +
         "</li>" +
         "</ul>" +
@@ -722,7 +832,8 @@ function moveImg(list, page) {
       }, 280);
     }
     // 添加图片
-
+    console.log(offsetWidth);
+    console.log(offsetHeight)
     changeStyle(cloneEl, ["left:" + (parseFloat(maskWidth) / 2 - offsetWidth / 2 - 10) + "px", "top:" + 0 + "px"]);
 
     cloneEl.style.height = parseFloat(document.getElementById("list").style.height) + 1.4 + 'rem'
