@@ -159,14 +159,6 @@ function querySearch() {
     );
   }
   var searchValue = $("#searchInput").value;
-  console.log(searchValue);
-  console.log(
-    apiUrl +
-      "/queryListProductByUser?userId=109269&kw=" +
-      searchValue +
-      "&page=" +
-      searchPage
-  );
   fetch(
     apiUrl +
       "/queryListProductByUser?userId=109269&kw=" +
@@ -175,11 +167,9 @@ function querySearch() {
       searchPage
   )
     .then(function (res) {
-      console.log(res);
       return res.json();
     })
     .then(function (res) {
-      console.log(res);
       var count = res.count;
       var productsStr = res.products;
       searchTotal = count;
@@ -307,6 +297,7 @@ function show(name) {
       }
       break;
     case "searchPage":
+      console.log(page);
       document.querySelector("i").style.visibility = "visible";
       title.innerText = "询价";
       search.style.display = "flex";
@@ -317,11 +308,8 @@ function show(name) {
       $("#cart").innerText = cart.length + "件产品";
       $("#to-inquiry-button").style.display = "block";
       $("#inquiry-button").style.display = "none";
-      console.log(oldSearchValue);
-      console.log($("#searchInput").value);
       if ($("#searchInput").value !== oldSearchValue) {
         var liNum = $("#searchPage").querySelectorAll("li").length;
-        console.log($("#searchPage"));
         for (var i = 0; i < liNum - 1; i++) {
           $("#searchPage li:first-child").remove();
         }
@@ -329,6 +317,7 @@ function show(name) {
         oldSearchValue = $("#searchInput").value;
         querySearch();
       }
+      turnBack(page);
       break;
     case "add":
       document.querySelector("i").style.visibility = "visible";
@@ -393,7 +382,28 @@ function show(name) {
       var list = document.getElementById("list");
       moveImg(list);
 
-      turnBack(page);
+      var touchStartX = 0;
+      var touchEndX = 0;
+
+      page.addEventListener("touchstart", function (e) {
+        touchStartX = e.touches[0].pageX;
+      });
+
+      page.addEventListener("touchend", function (e) {
+        touchEndX = e.changedTouches[0].pageX;
+        handleSwipe(e);
+      });
+
+      function handleSwipe(e) {
+        var swipeThreshold = 70; // 设置滑动阈值
+        if (touchEndX - touchStartX > swipeThreshold) {
+          if (addBefore === "index") {
+            show("index");
+          } else {
+            show("searchPage");
+          }
+        }
+      }
 
       break;
     case "inquiry":
@@ -449,7 +459,7 @@ function show(name) {
         counter.append(decreaseButton, quantityBlock, increaseButton);
         contentBlock.appendChild(counter);
         var detailBlock = $$("span");
-        detailBlock.innerText = "详情";
+        detailBlock.innerText = "了解更多";
         detailBlock.style.cssText = "font-size:0.8rem;";
         detailBlock.addEventListener("click", function () {
           addId = p.id;
@@ -493,6 +503,7 @@ function show(name) {
       }, 1000);
       break;
     case "cartAdd":
+      addBefore = "inquiry";
       document.querySelector("i").style.visibility = "visible";
       title.innerText = "详情";
       search.style.display = "none";
@@ -518,7 +529,8 @@ function show(name) {
         var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
         var decreaseButton = $$("button");
-        decreaseButton.style.cssText = "margin:0 0.47rem;";
+        decreaseButton.style.cssText =
+          "margin:0 0.47rem;width:1.2rem;height:1.2rem";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
           if (cartProduct.quantity > 1) {
@@ -529,7 +541,8 @@ function show(name) {
         var quantityBlock = $$("span");
         quantityBlock.innerText = cartProduct.quantity;
         var increaseButton = $$("button");
-        increaseButton.style.cssText = "margin:0 0.47rem";
+        increaseButton.style.cssText =
+          "margin:0 0.47rem;width:1.2rem;height:1.2rem";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
           cartProduct.quantity++;
@@ -550,16 +563,15 @@ function show(name) {
         show("index");
       }
 
+      // 右滑返回
       var touchStartX = 0;
       var touchEndX = 0;
 
       page.addEventListener("touchstart", function (e) {
-        e.stopPropagation();
         touchStartX = e.touches[0].pageX;
       });
 
       page.addEventListener("touchend", function (e) {
-        e.stopPropagation();
         touchEndX = e.changedTouches[0].pageX;
         handleSwipe(e);
       });
@@ -567,13 +579,18 @@ function show(name) {
       function handleSwipe(e) {
         var swipeThreshold = 70; // 设置滑动阈值
         if (touchEndX - touchStartX > swipeThreshold) {
-          show("inquiry");
+          if (addBefore === "index") {
+            show("index");
+          } else if (addBefore === "search") {
+            show("searchPage");
+          } else {
+            show("inquiry");
+          }
         }
       }
 
       var cartList = document.getElementById("cartList");
       moveImg(cartList);
-
       break;
   }
 }
@@ -590,7 +607,7 @@ function back() {
     case "add":
       if (addBefore === "index") {
         show("index");
-      } else {
+      } else if (addBefore === "search") {
         show("searchPage");
       }
       break;
@@ -676,7 +693,7 @@ function openApp(e) {
         "</button>" +
         "</li>" +
         "</ul>" +
-        '<ul id="searchPage" style="list-style-type:none;display:none;">' +
+        '<ul id="searchPage" style="list-style-type:none;display:none;height:100%">' +
         '<li id="search-load-more" style="padding:2.35rem 0;text-align:center;display:none;">' +
         '<button style="padding:0 1.27rem;font-size:0.935rem;color:#909090;line-height:2.225rem;background-color:#FFF;border:1px solid #909090;" onclick="querySearch()">' +
         "</button>" +
@@ -798,7 +815,7 @@ function openApp(e) {
     });
 }
 
-function moveImg(list, page) {
+function moveImg(list) {
   var scale = 1;
   var offset = { left: 0, top: 0 };
   var origin = "center";
@@ -817,11 +834,30 @@ function moveImg(list, page) {
   var cloneEl = null;
   var originalEl = null;
 
-  list.addEventListener("click", function (e) {
-    if (e.preventDefault) {
-      e.preventDefault(); // 非IE浏览器
-    } else {
-      e.returnValue = false; // IE浏览器
+  var lastClickTime = 0;
+
+  list.addEventListener("touchend", function (e) {
+    e.preventDefault();
+    var currentTime = new Date().getTime();
+    var timeDiff = currentTime - lastClickTime;
+    if (timeDiff < 300) {
+      if (e.target.classList.contains("item")) {
+        originalEl = e.target;
+        cloneEl = originalEl.cloneNode(true);
+        originalEl.style.opacity = 0;
+        openPreview();
+      }
+    }
+    lastClickTime = currentTime;
+  });
+
+  list.addEventListener("dblclick", function (e) {
+    if (state === "add" || state === "cartAdd") {
+      if (e.preventDefault) {
+        e.preventDefault(); // 非IE浏览器
+      } else {
+        e.returnValue = false; // IE浏览器
+      }
     }
     if (e.target.classList.contains("item")) {
       originalEl = e.target;
@@ -875,59 +911,7 @@ function moveImg(list, page) {
         }
       }, 280);
     }
-    // 添加图片
-
-    // changeStyle(cloneEl, [
-    //   "left:" + (parseFloat(maskWidth) / 2 - offsetWidth / 2 - 10) + "px",
-    //   "top:" + 0 + "px",
-    // ]);
-
-    // cloneEl.style.height =
-    //   parseFloat(document.getElementById("list").style.height) + 1.4 + "rem";
     mask.appendChild(cloneEl);
-    // 移动图片到屏幕中心位置
-    // var originalCenterPoint = {
-    //   x: offsetWidth / 2 + left,
-    //   y: offsetHeight / 2 + top,
-    // };
-    // var winCenterPoint = { x: maskWidth / 2, y: maskHeight / 2 };
-
-    // var offsetDistance = {
-    //   left: winCenterPoint.x - originalCenterPoint.x + left,
-    //   top: winCenterPoint.y - originalCenterPoint.y + top,
-    // };
-    // var diffs = {
-    //   left: ((adaptScale() - 1) * offsetWidth) / 2,
-    //   top: ((adaptScale() - 1) * offsetHeight) / 2,
-    // };
-    // changeStyle(cloneEl, [
-    //   "transition: all 0.3s",
-    //   "width:" + offsetWidth * adaptScale() + "px",
-    //   "transform: translate(" +
-    //   (offsetDistance.left - left - diffs.left) +
-    //   "px," +
-    //   (offsetDistance.top - top - diffs.top) +
-    //   "px)",
-    // ]);
-    // // // 消除偏差
-    // setTimeout(function () {
-    //   changeStyle(cloneEl, [
-    //     "transition: all 0s",
-    //     "left: 0",
-    //     "top: 0",
-    //     "transform: translate(" +
-    //     offsetDistance.left -
-    //     diffs.left +
-    //     "px," +
-    //     (offsetDistance.top - diffs.top) +
-    //     "px)",
-    //   ]);
-    //   offset = {
-    //     left: offsetDistance.left - diffs.left,
-    //     top: offsetDistance.top - diffs.top,
-    //   }; // 记录值
-    //   record();
-    // }, 300);
   }
 
   // 滚轮缩放
@@ -942,34 +926,30 @@ function moveImg(list, page) {
     }
     origin = event.offsetX + "px " + event.offsetY + "px";
     // 缩放执行
-    console.log(scale);
-      if (event.deltaY < 0) {
-        scale += 0.1; // 放大
-      } else if (event.deltaY > 0) {
-        if(scale>1){
-          scale >= 0.2 && (scale -= 0.1); // 缩小
-        }
-        
+    if (event.deltaY < 0) {
+      scale += 0.1; // 放大
+    } else if (event.deltaY > 0) {
+      if (scale > 1) {
+        scale >= 0.2 && (scale -= 0.1); // 缩小
       }
-      if (scale < initialData.scale) {
-        reduction();
-      }
-      offset = getOffsetCorrection(event.offsetX, event.offsetY);
-      if (cloneEl) {
-        changeStyle(cloneEl, [
-          "transition: all .15s",
-          "transform-origin:" + origin,
-          "transform: translate(" +
-            offset.left +
-            "px," +
-            offset.top +
-            "px) scale(" +
-            scale +
-            ")",
-        ]);
-      }
-    
-    
+    }
+    if (scale < initialData.scale) {
+      reduction();
+    }
+    offset = getOffsetCorrection(event.offsetX, event.offsetY);
+    if (cloneEl) {
+      changeStyle(cloneEl, [
+        "transition: all .15s",
+        "transform-origin:" + origin,
+        "transform: translate(" +
+          offset.left +
+          "px," +
+          offset.top +
+          "px) scale(" +
+          scale +
+          ")",
+      ]);
+    }
   }
 
   // 获取中心改变的偏差
@@ -989,10 +969,12 @@ function moveImg(list, page) {
   }
   // 操作事件
   window.addEventListener("pointerdown", function (e) {
-    if (e.preventDefault) {
-      e.preventDefault(); // 非IE浏览器
-    } else {
-      e.returnValue = false; // IE浏览器
+    if (state === "add" || state === "cartAdd") {
+      if (e.preventDefault) {
+        e.preventDefault(); // 非IE浏览器
+      } else {
+        e.returnValue = false; // IE浏览器
+      }
     }
     touches.set(e.pointerId, e); // TODO: 点击存入触摸点
     isTouching = true;
