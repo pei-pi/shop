@@ -18,23 +18,28 @@ var page = 1,
   searchPage = 1,
   total = 0,
   addId = null;
-  flag = true;
-  searchFlag = true;
+flag = true;
+searchFlag = true;
 function getProducts() {
   var loadMoreBlock = $("#load-more");
-  window.addEventListener('scroll', function () {
-    if (flag && isElementInViewport(loadMoreBlock)) {
-      getProducts();
-      flag = false;
-    }
-  }, true);
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (flag && isElementInViewport(loadMoreBlock)) {
+        getProducts();
+        flag = false;
+      }
+    },
+    true
+  );
 
   function isElementInViewport(el) {
     var rect = el.getBoundingClientRect();
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
   }
@@ -53,13 +58,17 @@ function getProducts() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<img style="height:5.825rem;" src="' + product.image + '" />';
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:3.8125rem;max-height:3.8125rem;height:3.8125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:contain;" src="' +
+          product.image +
+          '" /></div>';
         var contentBlock = $$("div");
         contentBlock.style.cssText =
           "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
         contentBlock.innerHTML =
-          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          '<p style="height:1.3125rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
           product.title +
+          '</p><p style="height:2rem;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
+          product.profile +
           "</p>";
         product.quantity = 1;
         var counter = $$("p");
@@ -98,7 +107,7 @@ function getProducts() {
         productBlock.appendChild(contentBlock);
         var addButton = $$("button");
         addButton.style.cssText =
-          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:4px";
+          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:0.25rem";
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           cart.push(product);
@@ -118,11 +127,8 @@ function getProducts() {
       } else {
         flag = true;
       }
-
     });
 }
-
-
 
 function search() {
   var loadMoreBlock = $("#load-more");
@@ -136,11 +142,11 @@ function search() {
   //   return res.json();
   // })
   fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
-  .then(function (res) {
-    return res.json();
-  })
     .then(function (res) {
-      console.log(res)
+      return res.json();
+    })
+    .then(function (res) {
+      console.log(res);
       var data = res.data;
       for (var i = 0; i < data.length; i++) {
         var d = data[i];
@@ -233,7 +239,8 @@ function show(name) {
         var counter = $$("div");
         counter.style.cssText = "display:flex;flex-grow:1;";
         var decreaseButton = $$("button");
-        decreaseButton.style.cssText = "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
+        decreaseButton.style.cssText =
+          "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
           if (product.quantity > 1) {
@@ -244,7 +251,8 @@ function show(name) {
         var quantityBlock = $$("span");
         quantityBlock.innerText = product.quantity;
         var increaseButton = $$("button");
-        increaseButton.style.cssText = "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
+        increaseButton.style.cssText =
+          "margin:0 0.47rem;width:1.2rem;height:1.2rem;";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
           product.quantity++;
@@ -288,17 +296,22 @@ function show(name) {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<img style="height:5.825rem;" src="' + p.image + '" />';
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:3.8125rem;max-height:3.8125rem;height:3.8125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:contain;" src="' +
+          p.image +
+          '" /></div>';
         var contentBlock = $$("div");
         contentBlock.style.cssText =
           "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
         contentBlock.innerHTML =
-          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          '<p style="height:1.3125rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
           p.title +
+          '</p><p style="height:2rem;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
+          p.profile +
           "</p>";
         var counter = $$("p");
         counter.style.cssText = "display:flex;align-items:center;";
         var decreaseButton = $$("button");
+        decreaseButton.style.cssText = "width:1.2rem;height:1.2rem;";
         decreaseButton.innerText = "-";
         decreaseButton.addEventListener("click", function () {
           if (p.quantity > 1) {
@@ -310,6 +323,7 @@ function show(name) {
         quantityBlock.style.cssText = "margin:0 0.47rem";
         quantityBlock.innerText = p.quantity;
         var increaseButton = $$("button");
+        increaseButton.style.cssText = "width:1.2rem;height:1.2rem;";
         increaseButton.innerText = "+";
         increaseButton.addEventListener("click", function () {
           p.quantity++;
@@ -447,8 +461,6 @@ function show(name) {
   }
 }
 
-
-
 function back() {
   switch (state) {
     case "inquiry":
@@ -490,7 +502,6 @@ function closeApp() {
   addId = null;
 }
 
-
 function openApp(e) {
   var parentNode = e.parentNode;
   parentNode.removeChild(e);
@@ -501,7 +512,7 @@ function openApp(e) {
       return res.json();
     })
     .then(function (res) {
-      var post = res.post > 10 ? "已有10+人询价" : "立即询价"
+      var post = res.post > 10 ? "已有10+人询价" : "立即询价";
       var contact = res.contact;
       var company = res.company;
 
@@ -591,9 +602,15 @@ function openApp(e) {
         "</div>" +
         '<div id="bottom" style="color:#909090;margin:0.925rem 0;padding:0 1.17rem;display:none;align-items:stretch;">' +
         '<div style="width:50%;font-size:0.95rem;">' +
-        "<div>" + post + "</div>" +
-        "<div>" + contact + "</div>" +
-        "<div>" + company + "</div>" +
+        "<div>" +
+        post +
+        "</div>" +
+        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        contact +
+        "</div>" +
+        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        company +
+        "</div>" +
         "</div>" +
         '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
         '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
@@ -608,15 +625,15 @@ function openApp(e) {
       parentNode.insertBefore(app, parentNode.firstChild);
       show("index");
 
-
-
       // 设置媒体查询
       var mediaQuery = window.matchMedia("(max-width: 600px)");
       function handleMediaChange(e) {
         if (e.matches) {
-          app.style.cssText = "width:100%;height:100vh;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
+          app.style.cssText =
+            "width:100%;height:100vh;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;";
         } else {
-          app.style.cssText = "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;"
+          app.style.cssText =
+            "width:375px;height:667px;display:flex;flex-direction:column;border:1px solid #00000080;border-radius:1rem;box-shadow: 0 0 1rem 0.1rem #0000004d;";
         }
       }
       mediaQuery.addListener(handleMediaChange);
@@ -632,10 +649,12 @@ function openApp(e) {
           touchStartY = e.touches[0].pageY;
         });
 
-      document.querySelector("div.topM").addEventListener("touchend", function (e) {
-        touchEndY = e.changedTouches[0].pageY;
-        handleSwipe(e);
-      });
+      document
+        .querySelector("div.topM")
+        .addEventListener("touchend", function (e) {
+          touchEndY = e.changedTouches[0].pageY;
+          handleSwipe(e);
+        });
 
       function handleSwipe(e) {
         var swipeThreshold = 290; // 设置滑动阈值
@@ -643,7 +662,7 @@ function openApp(e) {
           closeApp();
         }
       }
-    })
+    });
 }
 
 function moveImg(list, page) {
@@ -660,7 +679,8 @@ function moveImg(list, page) {
   var scaleOrigin = { x: 0, y: 0 };
 
   var winWidth = document.getElementById("app").style.width;
-  winHeight = parseFloat(document.getElementById("list").style.height) + 1.4 + 'rem';
+  winHeight =
+    parseFloat(document.getElementById("list").style.height) + 1.4 + "rem";
   var cloneEl = null;
   var originalEl = null;
 
@@ -681,7 +701,8 @@ function moveImg(list, page) {
   function openPreview() {
     scale = 1;
     var maskWidth = document.getElementById("app").style.width;
-    var maskHeight = parseFloat(document.getElementById("list").style.height) + 1.4 + 'rem';
+    var maskHeight =
+      parseFloat(document.getElementById("list").style.height) + 1.4 + "rem";
     var offsetWidth = originalEl.offsetWidth,
       offsetHeight = originalEl.offsetHeight;
 
@@ -723,9 +744,13 @@ function moveImg(list, page) {
     }
     // 添加图片
 
-    changeStyle(cloneEl, ["left:" + (parseFloat(maskWidth) / 2 - offsetWidth / 2 - 10) + "px", "top:" + 0 + "px"]);
+    changeStyle(cloneEl, [
+      "left:" + (parseFloat(maskWidth) / 2 - offsetWidth / 2 - 10) + "px",
+      "top:" + 0 + "px",
+    ]);
 
-    cloneEl.style.height = parseFloat(document.getElementById("list").style.height) + 1.4 + 'rem'
+    cloneEl.style.height =
+      parseFloat(document.getElementById("list").style.height) + 1.4 + "rem";
     mask.appendChild(cloneEl);
     // 移动图片到屏幕中心位置
     // var originalCenterPoint = {
@@ -798,12 +823,12 @@ function moveImg(list, page) {
         "transition: all .15s",
         "transform-origin:" + origin,
         "transform: translate(" +
-        offset.left +
-        "px," +
-        offset.top +
-        "px) scale(" +
-        scale +
-        ")",
+          offset.left +
+          "px," +
+          offset.top +
+          "px) scale(" +
+          scale +
+          ")",
       ]);
     }
   }
@@ -870,12 +895,12 @@ function moveImg(list, page) {
           changeStyle(cloneEl, [
             "transition: all 0s",
             "transform: translate(" +
-            offset.left +
-            "px," +
-            offset.top +
-            "px) scale(" +
-            scale +
-            ")",
+              offset.left +
+              "px," +
+              offset.top +
+              "px) scale(" +
+              scale +
+              ")",
             "transform-origin:" + origin,
           ]);
         }
@@ -895,12 +920,12 @@ function moveImg(list, page) {
           changeStyle(cloneEl, [
             "transition: all 0s",
             "transform: translate(" +
-            offset.left +
-            "px," +
-            offset.top +
-            "px) scale(" +
-            scale +
-            ")",
+              offset.left +
+              "px," +
+              offset.top +
+              "px) scale(" +
+              scale +
+              ")",
             "transform-origin:" + origin,
           ]);
         }
@@ -959,12 +984,12 @@ function moveImg(list, page) {
       scale = initialData.scale;
       changeStyle(cloneEl, [
         "transform: translate(" +
-        offset.left +
-        "px," +
-        offset.top +
-        "px) scale(" +
-        scale +
-        ")",
+          offset.left +
+          "px," +
+          offset.top +
+          "px) scale(" +
+          scale +
+          ")",
         "transform-origin:" + origin,
       ]);
     }, 300);
