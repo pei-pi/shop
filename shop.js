@@ -758,12 +758,12 @@ function openApp(e) {
         "<div>" +
         post +
         "</div>" +
-        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        "<p style='text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;'>" +
         contact +
-        "</div>" +
-        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        "</p>" +
+        "<p style='text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;'>" +
         company +
-        "</div>" +
+        "</p>" +
         "</div>" +
         '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
         '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
