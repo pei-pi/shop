@@ -4,6 +4,8 @@ var $$ = document.createElement.bind(document);
 var apiUrl = "https://you.baige.me/inquiry";
 var products = [];
 var cart = [];
+var userId = 109269;
+var bookId = 148470;
 var bannerUsers = [
   "13012342321",
   "13012342322",
@@ -44,7 +46,7 @@ function getProducts() {
     );
   }
 
-  fetch(apiUrl + "/getListProductByUser?userId=109269&page=" + page)
+  fetch(apiUrl + "/getListProductByUser?userId=" + userId + "&page=" + page)
     .then(function (res) {
       return res.json();
     })
@@ -58,7 +60,7 @@ function getProducts() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:3.8125rem;max-height:3.8125rem;height:3.8125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:contain;" src="' +
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:4.3125rem;max-height:4.3125rem;height:4.3125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:cover;" src="' +
           product.image +
           '" /></div>';
         var contentBlock = $$("div");
@@ -108,7 +110,7 @@ function getProducts() {
         productBlock.appendChild(contentBlock);
         var addButton = $$("button");
         addButton.style.cssText =
-          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:0.25rem";
+          "min-width:3.5rem;font-size:0.935rem;font-weight:bold;line-height:2.5rem;background-color:#FFF;color:rgb(42, 102, 162);border:1px solid rgb(42, 102, 162);border-radius:0.25rem";
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           cart.push(product);
@@ -161,7 +163,9 @@ function querySearch() {
   var searchValue = $("#searchInput").value;
   fetch(
     apiUrl +
-      "/queryListProductByUser?userId=109269&kw=" +
+      "/queryListProductByUser?userId=" +
+      userId +
+      "&kw=" +
       searchValue +
       "&page=" +
       searchPage
@@ -225,7 +229,7 @@ function querySearch() {
         productBlock.appendChild(contentBlock);
         var addButton = $$("button");
         addButton.style.cssText =
-          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;border:1px solid #909090;border-radius:4px";
+          "min-width:4.7rem;font-size:0.935rem;line-height:3.375rem;background-color:#FFF;color:#fff;border:1px solid rgb(42, 102, 162);border-radius:4px";
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           cart.push(product);
@@ -253,6 +257,7 @@ function querySearch() {
     });
 }
 
+function displayProducts(res) {}
 var routes = ["index", "searchPage", "add", "inquiry", "padding", "cartAdd"];
 var state = "index";
 var oldSearchValue = "";
@@ -332,7 +337,7 @@ function show(name, obj) {
         page.innerHTML =
           '<div id="list" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           product.image +
-          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
+          '" /></div><p style="padding-top:1.475rem;font-size:1.375rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
           product.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           product.description.replace(/\n/g, "<br />") +
@@ -423,7 +428,7 @@ function show(name, obj) {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:3.8125rem;max-height:3.8125rem;height:3.8125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:contain;" src="' +
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:4.3125rem;max-height:4.3125rem;height:4.3125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:cover;" src="' +
           p.image +
           '" /></div>';
         var contentBlock = $$("div");
@@ -460,7 +465,7 @@ function show(name, obj) {
         contentBlock.appendChild(counter);
         var detailBlock = $$("span");
         detailBlock.innerText = "了解更多";
-        detailBlock.style.cssText = "font-size:0.8rem;";
+        detailBlock.style.cssText = "font-size:0.5rem;";
         detailBlock.addEventListener("click", function () {
           addId = p.id;
           show("cartAdd");
@@ -530,7 +535,7 @@ function show(name, obj) {
         page.innerHTML =
           '<div id="cartList" style="height:9.35rem;display:flex;justify-content:center;"><img class="item" src="' +
           cartProduct.image +
-          '" /></div><p style="font-size:1.875rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
+          '" /></div><p style="font-size:1.375rem;text-overflow:ellipsis;overflow:hidden;-webkit-line-clamp:1;display:-webkit-box;-webkit-box-orient:vertical;">' +
           cartProduct.title +
           '</p><hr style="margin:0.47rem 0;" /><p style="color:#909090;font-size:0.95rem;">' +
           cartProduct.description.replace(/\n/g, "<br />") +
@@ -567,7 +572,7 @@ function show(name, obj) {
         page.appendChild(quantitySettingBlock);
         var addButton = $$("button");
         addButton.style.cssText =
-          "width:100%;font-size:1.25rem;line-height:3.5rem;background-color:#FF0000;color:#FFF;border:none;";
+          "width:100%;font-size:1.25rem;line-height:3.5rem;background-color:#FF0000;color:rgb(42, 102, 162);border:none;";
         addButton.innerText = "加入";
         addButton.addEventListener("click", function () {
           show("inquiry");
@@ -637,6 +642,7 @@ function back() {
   }
 }
 
+var openBtn;
 function closeApp() {
   var app = $("#app");
   var parentNode = app.parentNode;
@@ -650,19 +656,18 @@ function closeApp() {
   addId = null;
 }
 
-var openBtn;
 function openApp(e) {
   openBtn = e;
   var parentNode = e.parentNode;
   parentNode.removeChild(e);
   var app = $$("div");
   app.id = "app";
-  fetch(apiUrl + "/getByUser?userId=109269")
+  fetch(apiUrl + "/getByUser?userId=" + userId)
     .then(function (res) {
       return res.json();
     })
     .then(function (res) {
-      var post = res.post > 10 ? "已有10+人询价" : "立即询价";
+      var post = res.post > 10 ? "已有" + res.post + "+人询价" : "立即询价";
       var contact = res.contact;
       var company = res.company;
 
@@ -730,14 +735,14 @@ function openApp(e) {
         '<div style="padding-left:0.47rem;display:flex;">' +
         '<span style="width:30%;line-height:1.875rem;">电话</span>' +
         '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入电话" type="text" name="mobile" />' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入电话" type="tel" name="mobile" />' +
         '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
         "</div>" +
         "</div>" +
         '<div style="padding-left:0.47rem;display:flex;">' +
         '<span style="width:30%;line-height:1.875rem;">邮箱</span>' +
         '<div style="flex-grow:1;display:flex;flex-direction:column;">' +
-        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入邮箱" type="text" name="email" />' +
+        '<input style="font-size:1.175rem;line-height:1.875rem;border:none;outline:none;" placeholder="请输入邮箱" type="email" name="email" />' +
         '<span style="color:#FF0000;font-size:0.7rem;display:none;"></span>' +
         "</div>" +
         "</div>" +
@@ -751,10 +756,10 @@ function openApp(e) {
         '<div id="cartAdd" style="display:none;height:100%;"></div>' +
         "</div>" +
         '<div id="bottom" style="color:#909090;margin:0.925rem 0;padding:0 1.17rem;display:none;align-items:stretch;">' +
-        '<div style="width:50%;font-size:0.95rem;">' +
-        "<div>" +
+        '<div style="width:60%;font-size:0.95rem;">' +
+        "<p style='font-size:0.6rem'>" +
         post +
-        "</div>" +
+        "</p>" +
         "<p style='text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;'>" +
         contact +
         "</p>" +
@@ -762,13 +767,13 @@ function openApp(e) {
         company +
         "</p>" +
         "</div>" +
-        '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
+        '<div style="width:40%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
         '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
-        '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.625rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
+        '<button id="to-inquiry-button" style="width:100%;font-size:0.935rem;line-height:2.925rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;" onclick="toInquiry()">' +
         "询价" +
         "</button>" +
-        '<button id="inquiry-button" style="width:100%;height:100%;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
-        "发起询价" +
+        '<button id="inquiry-button" style="width:100%;height:100%;line-height:2.925rem;font-size:0.935rem;background-color:#FF0000;color:#FFF;border:1px solid #FFF;display:none;" onclick="validate(this)">' +
+        "发送询价" +
         "</button>" +
         "</div>" +
         "</div>";
@@ -1204,7 +1209,7 @@ function validate(btn) {
       btn.innerText = "正在发送";
       var formData = new FormData(form);
       var data = {
-        bookId: "148470",
+        bookId: bookId,
         products: cart
           .map(function (p) {
             return p.id + "," + p.quantity;

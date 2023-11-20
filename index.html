@@ -11,13 +11,24 @@
         margin: 0;
         padding: 0;
       }
+      #title {
+        font-weight: bold;
+      }
       body {
         touch-action: manipulation;
       }
       ::placeholder {
         color: #c3c3c3;
       }
-
+      button,
+      i {
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      #to-inquiry-button,
+      #inquiry-button {
+        font-weight: bold;
+      }
       .modal {
         touch-action: none;
         user-select: none;
@@ -85,7 +96,7 @@
       ></div>
       <div style="color: gray">
         <p style="line-height: 1.5625rem">询价 | 获取报价</p>
-        <p id="visit" style="font-size: 0.8rem; line-height: 1.5625rem">
+        <p id="visit" style="font-size: 0.6rem; line-height: 1.5625rem">
           &nbsp;
         </p>
       </div>
