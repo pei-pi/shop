@@ -636,16 +636,12 @@ function back() {
       break;
   }
 }
-var openBtn;
+
 function closeApp() {
   var app = $("#app");
   var parentNode = app.parentNode;
   parentNode.removeChild(app);
-  var button = openBtn;
-  button.addEventListener("click", function (e) {
-    openApp(e.target);
-  });
-  parentNode.insertBefore(button, parentNode.firstChild);
+  parentNode.insertBefore(openBtn, parentNode.firstChild);
   mounted = false;
   page = 1;
   total = 0;
@@ -654,6 +650,7 @@ function closeApp() {
   addId = null;
 }
 
+var openBtn;
 function openApp(e) {
   openBtn = e;
   var parentNode = e.parentNode;
