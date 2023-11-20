@@ -636,16 +636,12 @@ function back() {
       break;
   }
 }
-var openBtn;
+
 function closeApp() {
   var app = $("#app");
   var parentNode = app.parentNode;
   parentNode.removeChild(app);
-  var button = openBtn;
-  button.addEventListener("click", function (e) {
-    openApp(e.target);
-  });
-  parentNode.insertBefore(button, parentNode.firstChild);
+  parentNode.insertBefore(openBtn, parentNode.firstChild);
   mounted = false;
   page = 1;
   total = 0;
@@ -654,6 +650,7 @@ function closeApp() {
   addId = null;
 }
 
+var openBtn;
 function openApp(e) {
   openBtn = e;
   var parentNode = e.parentNode;
@@ -758,12 +755,12 @@ function openApp(e) {
         "<div>" +
         post +
         "</div>" +
-        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        "<p style='text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;'>" +
         contact +
-        "</div>" +
-        "<div style='text-overflow:ellipsis;overflow:hidden;'>" +
+        "</p>" +
+        "<p style='text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;'>" +
         company +
-        "</div>" +
+        "</p>" +
         "</div>" +
         '<div style="width:50%;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">' +
         '<div style="font-size:0.7rem" id="cart">0件产品</div>' +
