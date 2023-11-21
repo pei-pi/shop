@@ -79,7 +79,8 @@ function getProducts() {
         decreaseButton.style.width = "1.2rem";
         decreaseButton.style.height = "1.2rem";
         decreaseButton.innerText = "-";
-        decreaseButton.addEventListener("click", function () {
+        decreaseButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           if (product.quantity > 1) {
             product.quantity--;
             quantityBlock.innerText = product.quantity;
@@ -92,7 +93,8 @@ function getProducts() {
         increaseButton.style.width = "1.2rem";
         increaseButton.style.height = "1.2rem";
         increaseButton.innerText = "+";
-        increaseButton.addEventListener("click", function () {
+        increaseButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           product.quantity++;
           quantityBlock.innerText = product.quantity;
         });
@@ -102,7 +104,7 @@ function getProducts() {
         detailBlock.innerText = "了解更多";
         detailBlock.classList.add("toDetail")
         detailBlock.style.cssText = "font-size:0.8rem;cursor:pointer;margin-right:1rem";
-        detailBlock.addEventListener("click", function () {
+        productBlock.addEventListener("click", function (e) {
           addBefore = "index";
           addId = product.id;
           show("add");
@@ -115,7 +117,8 @@ function getProducts() {
         addButton.style.cssText =
           "min-width:3.5rem;font-size:0.935rem;font-weight:bold;line-height:2.5rem;background-color:#FFF;color:rgb(42, 102, 162);border:1px solid rgb(42, 102, 162);border-radius:0.25rem";
         addButton.innerText = "加入";
-        addButton.addEventListener("click", function () {
+        addButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           cart.push(product);
           $("#cart").style.color = "inherit";
           $("#cart").innerText = cart.length + "件产品";
@@ -200,7 +203,8 @@ function querySearch() {
         decreaseButton.style.width = "1.2rem";
         decreaseButton.style.height = "1.2rem";
         decreaseButton.innerText = "-";
-        decreaseButton.addEventListener("click", function () {
+        decreaseButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           if (product.quantity > 1) {
             product.quantity--;
             quantityBlock.innerText = product.quantity;
@@ -213,7 +217,8 @@ function querySearch() {
         increaseButton.style.width = "1.2rem";
         increaseButton.style.height = "1.2rem";
         increaseButton.innerText = "+";
-        increaseButton.addEventListener("click", function () {
+        increaseButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           product.quantity++;
           quantityBlock.innerText = product.quantity;
         });
@@ -221,7 +226,7 @@ function querySearch() {
         var detailBlock = $$("span");
         detailBlock.innerText = "了解更多";
         detailBlock.style.cssText = "font-size:0.8rem;cursor:pointer;margin-right:1rem;";
-        detailBlock.addEventListener("click", function () {
+        productBlock.addEventListener("click", function () {
           addBefore = "search";
           addId = product.id;
           show("add");
@@ -234,7 +239,8 @@ function querySearch() {
         addButton.style.cssText =
           "min-width:3.5rem;font-size:0.935rem;font-weight:bold;line-height:2.5rem;background-color:#FFF;color:rgb(42, 102, 162);border:1px solid rgb(42, 102, 162);border-radius:0.25rem";
         addButton.innerText = "加入";
-        addButton.addEventListener("click", function () {
+        addButton.addEventListener("click", function (e) {
+          e.stopPropagation();
           cart.push(product);
           $("#cart").style.color = "inherit";
           $("#cart").innerText = cart.length + "件产品";
