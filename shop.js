@@ -60,16 +60,16 @@ function getProducts() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<div class="pro_image" style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:4.3125rem;max-height:4.3125rem;height:4.3125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:cover;" src="' +
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:4.3125rem;max-height:4.3125rem;height:4.3125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:cover;" src="' +
           product.image +
           '" /></div>';
         var contentBlock = $$("div");
         contentBlock.style.cssText =
           "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
         contentBlock.innerHTML =
-          '<p class="toDetail" style="height:1.3125rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
+          '<p style="height:1.3125rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
           product.title +
-          '</p><p class="pro_title" style="height:2rem;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
+          '</p><p style="height:2rem;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
           product.profile +
           "</p>";
         product.quantity = 1;
@@ -203,13 +203,17 @@ function querySearch() {
         productBlock.style.cssText =
           "padding:0.575rem 0;display:flex;justify-content:space-between;align-items:center;";
         productBlock.innerHTML =
-          '<img style="height:5.825rem;" src="' + product.image + '" />';
+          '<div style="min-width:6.25rem;max-width:6.25rem;width:6.25rem;min-height:4.3125rem;max-height:4.3125rem;height:4.3125rem;border-radius:0.25rem;overflow:hidden;cursor:pointer;"><img style="width:100%;height:100%;object-fit:cover;" src="' +
+          product.image +
+          '" /></div>';
         var contentBlock = $$("div");
         contentBlock.style.cssText =
           "flex-grow:1;padding:0 0.35rem;font-size:0.7rem;color:#909090;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;";
         contentBlock.innerHTML =
-          '<p style="height:2.625rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;">' +
+          '<p style="height:1.3125rem;font-size:0.95rem;color:#000;text-overflow:ellipsis;-webkit-line-clamp:1;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
           product.title +
+          '</p><p style="height:2rem;text-overflow:ellipsis;-webkit-line-clamp:2;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden;cursor:pointer;">' +
+          product.profile +
           "</p>";
         product.quantity = 1;
         product.sumQuantity = 1;
@@ -504,16 +508,18 @@ function show(name, obj) {
           p.sumQuantity++;
           quantityBlock.innerText = p.sumQuantity;
         });
-        counter.append(decreaseButton, quantityBlock, increaseButton);
-        contentBlock.appendChild(counter);
+
         var detailBlock = $$("span");
         detailBlock.innerText = "了解更多";
-        detailBlock.style.cssText = "font-size:0.5rem;";
+        detailBlock.style.cssText =
+          "font-size:0.8rem;cursor:pointer;margin-right:1rem;";
         detailBlock.addEventListener("click", function () {
           addId = p.id;
           show("cartAdd");
         });
-        contentBlock.appendChild(detailBlock);
+        counter.append(detailBlock);
+        counter.append(decreaseButton, quantityBlock, increaseButton);
+        contentBlock.appendChild(counter);
         productBlock.appendChild(contentBlock);
 
         var deleteButton = $$("button");
