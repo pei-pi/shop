@@ -311,7 +311,6 @@ function show(name, obj) {
       }
       break;
     case "searchPage":
-      console.log(page);
       document.querySelector("i").style.visibility = "visible";
       title.innerText = "询价";
       search.style.display = "flex";
@@ -488,8 +487,8 @@ function show(name, obj) {
           "border:none;background:none;outline:none;color:#767676;";
         deleteButton.addEventListener("click", function () {
           cart.splice(index, 1);
+          toInquiry()
           cartListBlock.removeChild(productBlock);
-          if (cart.length === 0) show("index");
         });
         productBlock.appendChild(deleteButton);
         cartListBlock.appendChild(productBlock);
@@ -1167,6 +1166,11 @@ function toInquiry() {
   } else {
     $("#cart").style.color = "#FF0000";
     $("#cart").innerText = "请选择产品！";
+    var form = document.querySelector("form");
+    var emptyBlock = $$("p");
+    emptyBlock.style.cssText = "text-align:center;color:gray;margin:2rem 0;"
+    emptyBlock.innerHTML="暂无产品";
+    $("#inquiry").insertBefore(emptyBlock,form);
   }
 }
 
